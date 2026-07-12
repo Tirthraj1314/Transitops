@@ -49,6 +49,7 @@ export default function Dashboard() {
   const [fuelLogs, setFuelLogs] = useState([]);
   const [myTrips, setMyTrips] = useState([]);
   const [noDriverProfile, setNoDriverProfile] = useState(false);
+  const [incidents, setIncidents] = useState([]);
 
   useEffect(() => {
     api
@@ -77,6 +78,9 @@ export default function Dashboard() {
         .catch((err) => {
           if (err.response?.status === 404) setNoDriverProfile(true);
         });
+    }
+    if (role === "Safety Officer") {
+      api.get("/incidents").then(({ data }) => setIncidents(data || [])).catch(() => {});
     }
   }, [role]);
 
@@ -176,8 +180,18 @@ export default function Dashboard() {
       { title: "Expiring Soon (30d)", value: expiringSoon, icon: FiShield, accent: "amber" },
       { title: "Suspended Drivers", value: suspendedDrivers, icon: FiUsers, accent: "red" },
       { title: "Safety Score Average", value: avgSafetyScore, icon: FiActivity, accent: "green" },
-      { title: "Incidents", value: NA, icon: FiShield, accent: "amber" },
-      { title: "Violations", value: NA, icon: FiShield, accent: "amber" },
+      {
+        title: "Open Incidents",
+        value: incidents.filter((i) => i.status === "Open" && i.type !== "Violation").length,
+        icon: FiShield,
+        accent: "amber",
+      },
+      {
+        title: "Violations",
+        value: incidents.filter((i) => i.type === "Violation").length,
+        icon: FiShield,
+        accent: "amber",
+      },
     ];
     chart = {
       title: "Driver status breakdown",

@@ -18,6 +18,7 @@ import Revenue from "./pages/Revenue";
 import Invoices from "./pages/Invoices";
 import Notifications from "./pages/Notifications";
 import AuditLogs from "./pages/AuditLogs";
+import Incidents from "./pages/Incidents";
 import ComingSoon from "./pages/ComingSoon";
 import RequireRole from "./components/RequireRole";
 
@@ -75,7 +76,7 @@ export default function App() {
           <Route path="/vehicle-documents" element={<ComingSoon title="Vehicle Documents" />} />
           <Route path="/live-tracking" element={<ComingSoon title="Live Tracking" />} />
           <Route path="/compliance" element={<ComingSoon title="Compliance" />} />
-          <Route path="/incidents" element={<ComingSoon title="Incidents" />} />
+          <Route path="/incidents" element={<Incidents />} />
           <Route path="/safety-reports" element={<ComingSoon title="Safety Reports" />} />
           <Route path="/revenue" element={<Revenue />} />
           <Route path="/invoices" element={<Invoices />} />
