@@ -50,6 +50,9 @@ app.use('/api/audit-logs', auditLogRoutes);
 const incidentRoutes = require('./src/routes/incidentRoutes');
 app.use('/api/incidents', incidentRoutes);
 
+const companyRoutes = require('./src/routes/companyRoutes');
+app.use('/api/companies', companyRoutes);
+
 app.get('/', (req, res) => {
   res.json({ message: 'TransitOps API is running' });
 });

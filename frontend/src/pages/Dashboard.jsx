@@ -50,6 +50,8 @@ export default function Dashboard() {
   const [myTrips, setMyTrips] = useState([]);
   const [noDriverProfile, setNoDriverProfile] = useState(false);
   const [incidents, setIncidents] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     api
@@ -81,6 +83,10 @@ export default function Dashboard() {
     }
     if (role === "Safety Officer") {
       api.get("/incidents").then(({ data }) => setIncidents(data || [])).catch(() => {});
+    }
+    if (role === "Super Admin") {
+      api.get("/companies").then(({ data }) => setCompanies(data || [])).catch(() => {});
+      api.get("/users").then(({ data }) => setUsers(data || [])).catch(() => {});
     }
   }, [role]);
 
@@ -121,8 +127,8 @@ export default function Dashboard() {
 
   if (role === "Super Admin") {
     cards = [
-      { title: "Total Companies", value: NA, icon: FiUsers, accent: "blue" },
-      { title: "Total Users", value: NA, icon: FiUsers, accent: "blue" },
+      { title: "Total Companies", value: companies.length, icon: FiUsers, accent: "blue" },
+      { title: "Total Users", value: users.length, icon: FiUsers, accent: "blue" },
       { title: "Total Vehicles", value: vehicles.length, icon: FiTruck, accent: "blue" },
       { title: "Total Drivers", value: drivers.length, icon: FiUsers, accent: "green" },
       { title: "Active Trips", value: kpis.activeTrips, icon: FiMap, accent: "amber" },
