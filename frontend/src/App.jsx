@@ -16,6 +16,7 @@ import Users from "./pages/Users";
 import FuelLogs from "./pages/FuelLogs";
 import Revenue from "./pages/Revenue";
 import Invoices from "./pages/Invoices";
+import Notifications from "./pages/Notifications";
 import ComingSoon from "./pages/ComingSoon";
 import RequireRole from "./components/RequireRole";
 
@@ -60,7 +61,7 @@ export default function App() {
           />
           <Route path="/roles" element={<ComingSoon title="Roles & Permissions" />} />
           <Route path="/fuel-logs" element={<FuelLogs />} />
-          <Route path="/notifications" element={<ComingSoon title="Notifications" />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/audit-logs" element={<ComingSoon title="Audit Logs" />} />
           <Route path="/settings" element={<ComingSoon title="Settings" />} />
           <Route path="/vehicle-documents" element={<ComingSoon title="Vehicle Documents" />} />

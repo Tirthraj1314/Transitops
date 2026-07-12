@@ -1,14 +1,29 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiLogOut, FiUser, FiMenu, FiSun, FiMoon } from "react-icons/fi";
+import { FiLogOut, FiUser, FiMenu, FiSun, FiMoon, FiBell } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import GlobalSearch from "./GlobalSearch";
 import RoleBadge from "./RoleBadge";
+import api from "../services/api";
 
 export default function Navbar({ onMenuClick }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    function loadUnread() {
+      api
+        .get("/notifications")
+        .then(({ data }) => setUnreadCount((data || []).filter((n) => !n.isRead).length))
+        .catch(() => {});
+    }
+    loadUnread();
+    const interval = setInterval(loadUnread, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   function handleLogout() {
     logout();
@@ -34,6 +49,18 @@ export default function Navbar({ onMenuClick }) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
+        <button
+          onClick={() => navigate("/notifications")}
+          aria-label="Notifications"
+          className="relative rounded-lg p-2 text-gray-500 hover:bg-gray-50 dark:text-slate-400 dark:hover:bg-slate-800"
+        >
+          <FiBell size={18} />
+          {unreadCount > 0 && (
+            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </button>
         <button
           onClick={toggleTheme}
           aria-label="Toggle dark mode"

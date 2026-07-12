@@ -1,5 +1,6 @@
 const FuelLog = require('../models/FuelLog');
 const Vehicle = require('../models/Vehicle');
+const { notifyRole } = require('../utils/notify');
 
 // @desc  Add a fuel log entry
 // @route POST /api/fuel
@@ -20,6 +21,8 @@ const createFuelLog = async (req, res) => {
       cost,
       date: date || Date.now(),
     });
+
+    notifyRole('Super Admin', 'Fuel Added', `${liters}L fuel logged for ${vehicleDoc.registrationNumber} (₹${cost})`);
 
     res.status(201).json(fuelLog);
   } catch (error) {

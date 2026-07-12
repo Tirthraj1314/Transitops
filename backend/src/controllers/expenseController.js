@@ -1,5 +1,6 @@
 const Expense = require('../models/Expense');
 const Vehicle = require('../models/Vehicle');
+const { notifyRole } = require('../utils/notify');
 
 // @desc  Add an expense entry (toll, fine, parking, etc.)
 // @route POST /api/expenses
@@ -21,6 +22,8 @@ const createExpense = async (req, res) => {
       date: date || Date.now(),
       notes,
     });
+
+    notifyRole('Super Admin', 'Expense Added', `${category} expense of ₹${amount} added for ${vehicleDoc.registrationNumber}`);
 
     res.status(201).json(expense);
   } catch (error) {

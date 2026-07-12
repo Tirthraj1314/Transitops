@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
+const { notifyRole } = require('../utils/notify');
 
 // @desc  Register a new user
 // @route POST /api/auth/register
@@ -21,14 +22,15 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Role is never accepted from the client - self-registration always
-    // gets the lowest-privilege role. Assigning any other role is a
-    // Super Admin action (see docs/SPEC.md - "Manage users") and isn't
-    // implemented yet.
+    // gets the lowest-privilege role. Super Admin can reassign it
+    // afterwards via PATCH /api/users/:id/role.
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
+
+    notifyRole('Super Admin', 'New User', `${name} (${email}) just registered as ${user.role}`);
 
     res.status(201).json({
       _id: user._id,

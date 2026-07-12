@@ -2,6 +2,7 @@ const Trip = require('../models/Trip');
 const Vehicle = require('../models/Vehicle');
 const Driver = require('../models/Driver');
 const Invoice = require('../models/Invoice');
+const { notifyRole, notifyUser } = require('../utils/notify');
 
 // @desc  Create a trip (Draft status) — does NOT lock vehicle/driver yet
 // @route POST /api/trips
@@ -132,6 +133,10 @@ const dispatchTrip = async (req, res) => {
     await vehicleDoc.save();
     await driverDoc.save();
 
+    if (driverDoc.user) {
+      notifyUser(driverDoc.user, 'Trip Started', `You've been dispatched: ${trip.source} → ${trip.destination}`);
+    }
+
     res.json({ message: 'Trip dispatched successfully', trip });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -249,6 +254,13 @@ const reportIssue = async (req, res) => {
 
     trip.issueReport = { type, description, reportedAt: new Date() };
     await trip.save();
+
+    notifyRole(
+      ['Super Admin', 'Fleet Manager'],
+      'Vehicle Breakdown',
+      `${type} reported on trip ${trip.source} → ${trip.destination}: ${description}`
+    );
+
     res.json({ message: `${type} reported`, trip });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -304,6 +316,12 @@ const completeTrip = async (req, res) => {
         });
       }
     }
+
+    notifyRole(
+      ['Super Admin', 'Dispatcher'],
+      'Trip Completed',
+      `Trip ${trip.source} → ${trip.destination} was completed`
+    );
 
     res.json({ message: 'Trip completed successfully', trip });
   } catch (error) {
