@@ -1,6 +1,17 @@
+import { FiFile } from "react-icons/fi";
 import StatusBadge from "./StatusBadge";
+import SortableHeader from "./SortableHeader";
 
-export default function DriverTable({ drivers = [], onSelect }) {
+export default function DriverTable({
+  drivers = [],
+  onSelect,
+  onLink,
+  onDocuments,
+  canLink = false,
+  sortKey,
+  sortDir,
+  onSort,
+}) {
   if (drivers.length === 0) {
     return (
       <p className="p-6 text-center text-sm text-gray-500 dark:text-slate-400">No drivers found.</p>
@@ -8,31 +19,58 @@ export default function DriverTable({ drivers = [], onSelect }) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl bg-white shadow-sm dark:bg-slate-900">
+    <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="border-b bg-gray-50 text-gray-500 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400">
           <tr>
-            <th className="px-4 py-3">Name</th>
-            <th className="px-4 py-3">License No.</th>
-            <th className="px-4 py-3">Phone</th>
-            <th className="px-4 py-3">Assigned Vehicle</th>
-            <th className="px-4 py-3">Status</th>
+            <SortableHeader label="Name" sortKey="name" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
+            <SortableHeader label="License No." sortKey="licenseNumber" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
+            <th className="px-4 py-3">Contact</th>
+            <SortableHeader label="Safety Score" sortKey="safetyScore" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
+            <SortableHeader label="Status" sortKey="status" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
+            {canLink && <th className="px-4 py-3">Login Account</th>}
+            {canLink && <th className="px-4 py-3">Documents</th>}
           </tr>
         </thead>
         <tbody>
           {drivers.map((driver) => (
             <tr
-              key={driver.id}
-              onClick={() => onSelect?.(driver)}
-              className="cursor-pointer border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
+              key={driver._id}
+              className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
             >
-              <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">{driver.name}</td>
+              <td
+                onClick={() => onSelect?.(driver)}
+                className="cursor-pointer px-4 py-3 font-medium text-gray-800 dark:text-slate-100"
+              >
+                {driver.name}
+              </td>
               <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.licenseNumber}</td>
-              <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.phone}</td>
-              <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.vehicle || "Unassigned"}</td>
+              <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.contactNumber}</td>
+              <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.safetyScore}</td>
               <td className="px-4 py-3">
                 <StatusBadge status={driver.status} />
               </td>
+              {canLink && (
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => onLink?.(driver)}
+                    className="rounded-lg border px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  >
+                    {driver.user ? "Linked" : "Link account"}
+                  </button>
+                </td>
+              )}
+              {canLink && (
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => onDocuments?.(driver)}
+                    className="flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  >
+                    <FiFile size={12} />
+                    {driver.documents?.length || 0}
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

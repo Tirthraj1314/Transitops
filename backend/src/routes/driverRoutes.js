@@ -1,0 +1,32 @@
+const express = require('express');
+const router = express.Router();
+const {
+  createDriver,
+  getDrivers,
+  getDriverById,
+  updateDriver,
+  updateDriverSafety,
+  linkDriverUser,
+  uploadDriverDocument,
+  deleteDriver,
+} = require('../controllers/driverController');
+const { protect } = require('../middleware/authMiddleware');
+const authorizeRoles = require('../middleware/roleMiddleware');
+const upload = require('../middleware/upload');
+
+router.use(protect);
+
+router.route('/')
+  .post(authorizeRoles('Safety Officer'), createDriver)
+  .get(getDrivers);
+
+router.route('/:id')
+  .get(getDriverById)
+  .put(authorizeRoles('Safety Officer'), updateDriver)
+  .delete(authorizeRoles('Safety Officer'), deleteDriver);
+
+router.patch('/:id/safety', authorizeRoles('Safety Officer'), updateDriverSafety);
+router.patch('/:id/link-user', authorizeRoles('Safety Officer'), linkDriverUser);
+router.post('/:id/documents', authorizeRoles('Safety Officer'), upload.single('file'), uploadDriverDocument);
+
+module.exports = router;

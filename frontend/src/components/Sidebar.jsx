@@ -1,12 +1,17 @@
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
-import { NAV_ITEMS } from "../utils/navItems";
+import { useAuth } from "../context/AuthContext";
+import { sidebarForRole } from "../utils/roleConfig";
+import RoleBadge from "./RoleBadge";
 
 function NavList({ onNavigate }) {
+  const { user } = useAuth();
+  const items = sidebarForRole(user?.role);
+
   return (
     <nav className="flex-1 space-y-1 px-3">
-      {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+      {items.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}
           to={to}
@@ -28,11 +33,16 @@ function NavList({ onNavigate }) {
 }
 
 export default function Sidebar({ mobileOpen = false, onClose }) {
+  const { user } = useAuth();
+
   return (
     <>
       <aside className="hidden w-60 shrink-0 flex-col border-r bg-white dark:border-slate-800 dark:bg-slate-900 md:flex">
-        <div className="flex h-16 items-center px-6 text-lg font-bold text-blue-600 dark:text-blue-400">
-          TransitOps
+        <div className="flex h-16 items-center gap-2 px-6">
+          <span className="text-lg font-bold text-blue-600 dark:text-blue-400">TransitOps</span>
+        </div>
+        <div className="px-6 pb-3">
+          <RoleBadge role={user?.role} />
         </div>
         <NavList />
       </aside>

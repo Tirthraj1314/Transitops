@@ -4,17 +4,28 @@ import toast from "react-hot-toast";
 import { FiPlus } from "react-icons/fi";
 import VehicleTable from "../components/VehicleTable";
 import Modal from "../components/Modal";
+import TableSearch from "../components/TableSearch";
+import Pagination from "../components/Pagination";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { can } from "../utils/permissions";
+import { useTableControls } from "../hooks/useTableControls";
+
+const SEARCH_FIELDS = ["registrationNumber", "name", "type", "status"];
 
 export default function Vehicles() {
+  const { user } = useAuth();
+  const canManage = can(user?.role, "vehicles", "CRUD");
   const [vehicles, setVehicles] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm();
+  const { search, setSearch, sortKey, sortDir, toggleSort, page, setPage, totalPages, totalCount, rows } =
+    useTableControls(vehicles, { searchFields: SEARCH_FIELDS });
 
   function loadVehicles() {
     api
       .get("/vehicles")
-      .then(({ data }) => setVehicles(data.vehicles || []))
+      .then(({ data }) => setVehicles(data || []))
       .catch(() => {
         // vehicle data unavailable until the backend is connected
       });
@@ -24,7 +35,12 @@ export default function Vehicles() {
 
   async function onAddVehicle(payload) {
     try {
-      await api.post("/vehicles", payload);
+      await api.post("/vehicles", {
+        ...payload,
+        maxLoadCapacity: Number(payload.maxLoadCapacity),
+        acquisitionCost: Number(payload.acquisitionCost),
+        odometer: payload.odometer ? Number(payload.odometer) : 0,
+      });
       toast.success("Vehicle added");
       reset();
       setModalOpen(false);
@@ -38,28 +54,59 @@ export default function Vehicles() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Vehicles</h1>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          <FiPlus size={16} />
-          Add Vehicle
-        </button>
+        {canManage && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            <FiPlus size={16} />
+            Add Vehicle
+          </button>
+        )}
       </div>
 
-      <VehicleTable vehicles={vehicles} />
+      <div className="max-w-xs">
+        <TableSearch value={search} onChange={setSearch} placeholder="Search vehicles..." />
+      </div>
 
-      <Modal open={isModalOpen} title="Add Vehicle" onClose={() => setModalOpen(false)}>
+      <div className="rounded-xl bg-white shadow-sm dark:bg-slate-900">
+        <VehicleTable vehicles={rows} sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
+        <Pagination page={page} totalPages={totalPages} totalCount={totalCount} onPageChange={setPage} />
+      </div>
+
+      <Modal open={isModalOpen && canManage} title="Add Vehicle" onClose={() => setModalOpen(false)}>
         <form onSubmit={handleSubmit(onAddVehicle)} className="space-y-3">
           <input
-            placeholder="Vehicle number"
+            placeholder="Registration number"
             className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-            {...register("number", { required: true })}
+            {...register("registrationNumber", { required: true })}
+          />
+          <input
+            placeholder="Name (e.g. Van-05)"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("name", { required: true })}
           />
           <input
             placeholder="Type (Truck, Van, ...)"
             className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             {...register("type", { required: true })}
+          />
+          <input
+            placeholder="Max load capacity (kg)"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("maxLoadCapacity", { required: true })}
+          />
+          <input
+            placeholder="Acquisition cost"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("acquisitionCost", { required: true })}
+          />
+          <input
+            placeholder="Region"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("region")}
           />
           <input
             placeholder="Odometer (km)"

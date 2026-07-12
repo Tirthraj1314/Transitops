@@ -12,6 +12,20 @@ import Maintenance from "./pages/Maintenance";
 import Expenses from "./pages/Expenses";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
+import Users from "./pages/Users";
+import FuelLogs from "./pages/FuelLogs";
+import Revenue from "./pages/Revenue";
+import Invoices from "./pages/Invoices";
+import Notifications from "./pages/Notifications";
+import AuditLogs from "./pages/AuditLogs";
+import Incidents from "./pages/Incidents";
+import Compliance from "./pages/Compliance";
+import Companies from "./pages/Companies";
+import RolesPermissions from "./pages/RolesPermissions";
+import Settings from "./pages/Settings";
+import VehicleDocuments from "./pages/VehicleDocuments";
+import ComingSoon from "./pages/ComingSoon";
+import RequireRole from "./components/RequireRole";
 
 export default function App() {
   const { theme } = useTheme();
@@ -39,7 +53,61 @@ export default function App() {
           <Route path="/maintenance" element={<Maintenance />} />
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/analytics" element={<Reports />} />
+          <Route path="/trip-history" element={<Trips />} />
           <Route path="/profile" element={<Profile />} />
+
+          <Route
+            path="/companies"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <Companies />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <Users />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/roles"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <RolesPermissions />
+              </RequireRole>
+            }
+          />
+          <Route path="/fuel-logs" element={<FuelLogs />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route
+            path="/audit-logs"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <AuditLogs />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <Settings />
+              </RequireRole>
+            }
+          />
+          <Route path="/vehicle-documents" element={<VehicleDocuments />} />
+          <Route path="/live-tracking" element={<ComingSoon title="Live Tracking" />} />
+          <Route path="/compliance" element={<Compliance />} />
+          <Route path="/incidents" element={<Incidents />} />
+          <Route path="/safety-reports" element={<ComingSoon title="Safety Reports" />} />
+          <Route path="/revenue" element={<Revenue />} />
+          <Route path="/invoices" element={<Invoices />} />
+          <Route path="/my-trips" element={<Trips />} />
+          <Route path="/documents" element={<ComingSoon title="Documents" />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
