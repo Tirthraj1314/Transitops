@@ -6,7 +6,7 @@ const authorizeRoles = require('../middleware/roleMiddleware');
 
 router.use(protect);
 
-router.get('/', authorizeRoles('FinancialAnalyst', 'FleetManager'), getReport);
-router.get('/export/csv', authorizeRoles('FinancialAnalyst', 'FleetManager'), exportReportCSV);
+router.get('/', authorizeRoles('Finance Manager', 'Fleet Manager'), getReport);
+router.get('/export/csv', authorizeRoles('Finance Manager', 'Fleet Manager'), exportReportCSV);
 
 module.exports = router;

@@ -14,14 +14,14 @@ const authorizeRoles = require('../middleware/roleMiddleware');
 router.use(protect);
 
 router.route('/')
-  .post(authorizeRoles('FleetManager'), createDriver)
+  .post(authorizeRoles('Fleet Manager'), createDriver)
   .get(getDrivers);
 
 router.route('/:id')
   .get(getDriverById)
-  .put(authorizeRoles('FleetManager'), updateDriver)
-  .delete(authorizeRoles('FleetManager'), deleteDriver);
+  .put(authorizeRoles('Fleet Manager'), updateDriver)
+  .delete(authorizeRoles('Fleet Manager'), deleteDriver);
 
-router.patch('/:id/safety', authorizeRoles('SafetyOfficer'), updateDriverSafety);
+router.patch('/:id/safety', authorizeRoles('Safety Officer'), updateDriverSafety);
 
 module.exports = router;

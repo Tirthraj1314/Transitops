@@ -14,12 +14,12 @@ const authorizeRoles = require('../middleware/roleMiddleware');
 router.use(protect);
 
 router.route('/')
-  .post(authorizeRoles('Driver', 'FleetManager'), createTrip)
+  .post(authorizeRoles('Dispatcher', 'Fleet Manager'), createTrip)
   .get(getTrips);
 
 router.get('/:id', getTripById);
-router.patch('/:id/dispatch', authorizeRoles('Driver', 'FleetManager'), dispatchTrip);
-router.patch('/:id/complete', authorizeRoles('Driver', 'FleetManager'), completeTrip);
-router.patch('/:id/cancel', authorizeRoles('Driver', 'FleetManager'), cancelTrip);
+router.patch('/:id/dispatch', authorizeRoles('Dispatcher', 'Fleet Manager'), dispatchTrip);
+router.patch('/:id/complete', authorizeRoles('Dispatcher', 'Fleet Manager'), completeTrip);
+router.patch('/:id/cancel', authorizeRoles('Dispatcher', 'Fleet Manager'), cancelTrip);
 
 module.exports = router;

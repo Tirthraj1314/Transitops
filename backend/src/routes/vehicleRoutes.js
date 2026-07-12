@@ -17,12 +17,12 @@ router.use(protect);
 router.get('/:id/cost', getVehicleOperationalCost);
 
 router.route('/')
-  .post(authorizeRoles('FleetManager'), createVehicle)
+  .post(authorizeRoles('Fleet Manager'), createVehicle)
   .get(getVehicles); // any authenticated role can view
 
 router.route('/:id')
   .get(getVehicleById)
-  .put(authorizeRoles('FleetManager'), updateVehicle)
-  .delete(authorizeRoles('FleetManager'), deleteVehicle);
+  .put(authorizeRoles('Fleet Manager'), updateVehicle)
+  .delete(authorizeRoles('Fleet Manager'), deleteVehicle);
 
 module.exports = router;

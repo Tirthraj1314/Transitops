@@ -7,9 +7,9 @@ const authorizeRoles = require('../middleware/roleMiddleware');
 router.use(protect);
 
 router.route('/')
-  .post(authorizeRoles('FleetManager', 'Driver'), createFuelLog)
+  .post(authorizeRoles('Fleet Manager', 'Dispatcher'), createFuelLog)
   .get(getFuelLogs);
 
-router.delete('/:id', authorizeRoles('FleetManager'), deleteFuelLog);
+router.delete('/:id', authorizeRoles('Fleet Manager'), deleteFuelLog);
 
 module.exports = router;

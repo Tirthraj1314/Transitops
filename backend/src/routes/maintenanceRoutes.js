@@ -13,11 +13,11 @@ const authorizeRoles = require('../middleware/roleMiddleware');
 router.use(protect);
 
 router.route('/')
-  .post(authorizeRoles('FleetManager'), createMaintenance)
+  .post(authorizeRoles('Fleet Manager'), createMaintenance)
   .get(getMaintenanceRecords);
 
 router.get('/:id', getMaintenanceById);
-router.put('/:id', authorizeRoles('FleetManager'), updateMaintenance);
-router.patch('/:id/close', authorizeRoles('FleetManager'), closeMaintenance);
+router.put('/:id', authorizeRoles('Fleet Manager'), updateMaintenance);
+router.patch('/:id/close', authorizeRoles('Fleet Manager'), closeMaintenance);
 
 module.exports = router;

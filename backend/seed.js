@@ -30,10 +30,11 @@ const seed = async () => {
     const password = await bcrypt.hash('password123', 10);
 
     const users = await User.create([
-      { name: 'Manish (Fleet Manager)', email: 'fleetmanager@transitops.com', password, role: 'FleetManager' },
-      { name: 'Alex (Driver)', email: 'driver@transitops.com', password, role: 'Driver' },
-      { name: 'Priya (Safety Officer)', email: 'safety@transitops.com', password, role: 'SafetyOfficer' },
-      { name: 'Rahul (Financial Analyst)', email: 'finance@transitops.com', password, role: 'FinancialAnalyst' },
+      { name: 'Deepa (Super Admin)', email: 'superadmin@transitops.com', password, role: 'Super Admin' },
+      { name: 'Manish (Fleet Manager)', email: 'fleetmanager@transitops.com', password, role: 'Fleet Manager' },
+      { name: 'Alex (Dispatcher)', email: 'dispatcher@transitops.com', password, role: 'Dispatcher' },
+      { name: 'Priya (Safety Officer)', email: 'safety@transitops.com', password, role: 'Safety Officer' },
+      { name: 'Rahul (Finance Manager)', email: 'finance@transitops.com', password, role: 'Finance Manager' },
     ]);
     console.log(`Created ${users.length} users. Password for all: password123`);
 
@@ -178,10 +179,11 @@ const seed = async () => {
 
     console.log('\n=== SEED COMPLETE ===');
     console.log('\nLogin credentials (all use password: password123):');
-    console.log('FleetManager   -> fleetmanager@transitops.com');
-    console.log('Driver         -> driver@transitops.com');
-    console.log('SafetyOfficer  -> safety@transitops.com');
-    console.log('FinancialAnalyst -> finance@transitops.com');
+    console.log('Super Admin    -> superadmin@transitops.com');
+    console.log('Fleet Manager  -> fleetmanager@transitops.com');
+    console.log('Dispatcher     -> dispatcher@transitops.com');
+    console.log('Safety Officer -> safety@transitops.com');
+    console.log('Finance Manager -> finance@transitops.com');
     console.log('\nDemo scenarios ready:');
     console.log('- Van-05: Available, has a Completed trip with revenue/fuel/expenses (test Reports & ROI)');
     console.log('- Truck-12: Available, has a Draft trip ready to Dispatch (test dispatch flow)');
