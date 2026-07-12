@@ -3,6 +3,7 @@ import { FiLogOut, FiUser, FiMenu, FiSun, FiMoon } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import GlobalSearch from "./GlobalSearch";
+import RoleBadge from "./RoleBadge";
 
 export default function Navbar({ onMenuClick }) {
   const { user, logout } = useAuth();
@@ -24,7 +25,7 @@ export default function Navbar({ onMenuClick }) {
           <FiMenu size={22} />
         </button>
         <h1 className="hidden text-base font-semibold text-gray-800 dark:text-slate-100 sm:block">
-          Fleet Overview
+          {user?.role ? `${user.role} Overview` : "Overview"}
         </h1>
       </div>
 
@@ -43,6 +44,7 @@ export default function Navbar({ onMenuClick }) {
         <div className="hidden items-center gap-2 text-sm text-gray-600 dark:text-slate-300 sm:flex">
           <FiUser size={16} />
           {user?.name || "Guest"}
+          <RoleBadge role={user?.role} />
         </div>
         <button
           onClick={handleLogout}

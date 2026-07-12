@@ -5,8 +5,12 @@ import { FiPlus } from "react-icons/fi";
 import DriverTable from "../components/DriverTable";
 import Modal from "../components/Modal";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { can } from "../utils/permissions";
 
 export default function Drivers() {
+  const { user } = useAuth();
+  const canManage = can(user?.role, "drivers", "CRUD");
   const [drivers, setDrivers] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm();
@@ -38,18 +42,20 @@ export default function Drivers() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Drivers</h1>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          <FiPlus size={16} />
-          Add Driver
-        </button>
+        {canManage && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            <FiPlus size={16} />
+            Add Driver
+          </button>
+        )}
       </div>
 
       <DriverTable drivers={drivers} />
 
-      <Modal open={isModalOpen} title="Add Driver" onClose={() => setModalOpen(false)}>
+      <Modal open={isModalOpen && canManage} title="Add Driver" onClose={() => setModalOpen(false)}>
         <form onSubmit={handleSubmit(onAddDriver)} className="space-y-3">
           <input
             placeholder="Full name"

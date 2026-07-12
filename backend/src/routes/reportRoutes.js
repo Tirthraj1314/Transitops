@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { getReport, exportReportCSV } = require('../controllers/reportController');
 const { protect } = require('../middleware/authMiddleware');
-const authorizeRoles = require('../middleware/roleMiddleware');
 
 router.use(protect);
 
-router.get('/', authorizeRoles('Finance Manager', 'Fleet Manager'), getReport);
-router.get('/export/csv', authorizeRoles('Finance Manager', 'Fleet Manager'), exportReportCSV);
+// Every role sees a report scoped to them per docs/SPEC.md's permission
+// matrix (Fleet/Operations/Safety/Finance/Personal); there's only one
+// report type implemented so far, so it's open to any authenticated user.
+router.get('/', getReport);
+router.get('/export/csv', exportReportCSV);
 
 module.exports = router;

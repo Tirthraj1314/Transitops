@@ -35,6 +35,7 @@ const seed = async () => {
       { name: 'Alex (Dispatcher)', email: 'dispatcher@transitops.com', password, role: 'Dispatcher' },
       { name: 'Priya (Safety Officer)', email: 'safety@transitops.com', password, role: 'Safety Officer' },
       { name: 'Rahul (Finance Manager)', email: 'finance@transitops.com', password, role: 'Finance Manager' },
+      { name: 'Vikram (Driver)', email: 'driver@transitops.com', password, role: 'Driver' },
     ]);
     console.log(`Created ${users.length} users. Password for all: password123`);
 
@@ -184,6 +185,7 @@ const seed = async () => {
     console.log('Dispatcher     -> dispatcher@transitops.com');
     console.log('Safety Officer -> safety@transitops.com');
     console.log('Finance Manager -> finance@transitops.com');
+    console.log('Driver         -> driver@transitops.com');
     console.log('\nDemo scenarios ready:');
     console.log('- Van-05: Available, has a Completed trip with revenue/fuel/expenses (test Reports & ROI)');
     console.log('- Truck-12: Available, has a Draft trip ready to Dispatch (test dispatch flow)');

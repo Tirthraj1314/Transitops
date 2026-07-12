@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import StatusBadge from "../components/StatusBadge";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { can } from "../utils/permissions";
 
 export default function Trips() {
+  const { user } = useAuth();
+  const canManage = can(user?.role, "trips", "CRUD");
   const [trips, setTrips] = useState([]);
 
   function loadTrips() {
@@ -39,13 +43,16 @@ export default function Trips() {
               <th className="px-4 py-3">Vehicle</th>
               <th className="px-4 py-3">Driver</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
+              {canManage && <th className="px-4 py-3">Actions</th>}
             </tr>
           </thead>
           <tbody>
             {trips.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-500 dark:text-slate-400">
+                <td
+                  colSpan={canManage ? 5 : 4}
+                  className="px-4 py-6 text-center text-gray-500 dark:text-slate-400"
+                >
                   No trips found.
                 </td>
               </tr>
@@ -62,32 +69,34 @@ export default function Trips() {
                   <td className="px-4 py-3">
                     <StatusBadge status={trip.status} />
                   </td>
-                  <td className="px-4 py-3">
-                    {trip.status === "Draft" && (
-                      <button
-                        onClick={() => runAction(trip._id, "dispatch")}
-                        className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
-                      >
-                        Dispatch
-                      </button>
-                    )}
-                    {trip.status === "Dispatched" && (
-                      <div className="flex gap-2">
+                  {canManage && (
+                    <td className="px-4 py-3">
+                      {trip.status === "Draft" && (
                         <button
-                          onClick={() => runAction(trip._id, "complete")}
-                          className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700"
+                          onClick={() => runAction(trip._id, "dispatch")}
+                          className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
                         >
-                          Complete
+                          Dispatch
                         </button>
-                        <button
-                          onClick={() => runAction(trip._id, "cancel")}
-                          className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </td>
+                      )}
+                      {trip.status === "Dispatched" && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => runAction(trip._id, "complete")}
+                            className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700"
+                          >
+                            Complete
+                          </button>
+                          <button
+                            onClick={() => runAction(trip._id, "cancel")}
+                            className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))
             )}

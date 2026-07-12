@@ -12,6 +12,7 @@ import Maintenance from "./pages/Maintenance";
 import Expenses from "./pages/Expenses";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
+import ComingSoon from "./pages/ComingSoon";
 
 export default function App() {
   const { theme } = useTheme();
@@ -39,7 +40,26 @@ export default function App() {
           <Route path="/maintenance" element={<Maintenance />} />
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/analytics" element={<Reports />} />
+          <Route path="/trip-history" element={<Trips />} />
           <Route path="/profile" element={<Profile />} />
+
+          <Route path="/companies" element={<ComingSoon title="Companies" />} />
+          <Route path="/users" element={<ComingSoon title="Users" />} />
+          <Route path="/roles" element={<ComingSoon title="Roles & Permissions" />} />
+          <Route path="/fuel-logs" element={<ComingSoon title="Fuel Logs" />} />
+          <Route path="/notifications" element={<ComingSoon title="Notifications" />} />
+          <Route path="/audit-logs" element={<ComingSoon title="Audit Logs" />} />
+          <Route path="/settings" element={<ComingSoon title="Settings" />} />
+          <Route path="/vehicle-documents" element={<ComingSoon title="Vehicle Documents" />} />
+          <Route path="/live-tracking" element={<ComingSoon title="Live Tracking" />} />
+          <Route path="/compliance" element={<ComingSoon title="Compliance" />} />
+          <Route path="/incidents" element={<ComingSoon title="Incidents" />} />
+          <Route path="/safety-reports" element={<ComingSoon title="Safety Reports" />} />
+          <Route path="/revenue" element={<ComingSoon title="Revenue" />} />
+          <Route path="/invoices" element={<ComingSoon title="Invoices" />} />
+          <Route path="/my-trips" element={<ComingSoon title="My Trips" />} />
+          <Route path="/documents" element={<ComingSoon title="Documents" />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

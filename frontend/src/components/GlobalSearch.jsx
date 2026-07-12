@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
-import { NAV_ITEMS } from "../utils/navItems";
+import { useAuth } from "../context/AuthContext";
+import { sidebarForRole } from "../utils/roleConfig";
 
 export default function GlobalSearch() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const navItems = sidebarForRole(user?.role);
 
   const matches =
     query.trim().length === 0
       ? []
-      : NAV_ITEMS.filter((item) => item.label.toLowerCase().includes(query.trim().toLowerCase()));
+      : navItems.filter((item) => item.label.toLowerCase().includes(query.trim().toLowerCase()));
 
   useEffect(() => {
     function handleClickOutside(event) {

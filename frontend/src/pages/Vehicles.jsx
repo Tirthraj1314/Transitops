@@ -5,8 +5,12 @@ import { FiPlus } from "react-icons/fi";
 import VehicleTable from "../components/VehicleTable";
 import Modal from "../components/Modal";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { can } from "../utils/permissions";
 
 export default function Vehicles() {
+  const { user } = useAuth();
+  const canManage = can(user?.role, "vehicles", "CRUD");
   const [vehicles, setVehicles] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm();
@@ -43,18 +47,20 @@ export default function Vehicles() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Vehicles</h1>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          <FiPlus size={16} />
-          Add Vehicle
-        </button>
+        {canManage && (
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            <FiPlus size={16} />
+            Add Vehicle
+          </button>
+        )}
       </div>
 
       <VehicleTable vehicles={vehicles} />
 
-      <Modal open={isModalOpen} title="Add Vehicle" onClose={() => setModalOpen(false)}>
+      <Modal open={isModalOpen && canManage} title="Add Vehicle" onClose={() => setModalOpen(false)}>
         <form onSubmit={handleSubmit(onAddVehicle)} className="space-y-3">
           <input
             placeholder="Registration number"
