@@ -12,7 +12,9 @@ import Maintenance from "./pages/Maintenance";
 import Expenses from "./pages/Expenses";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
+import Users from "./pages/Users";
 import ComingSoon from "./pages/ComingSoon";
+import RequireRole from "./components/RequireRole";
 
 export default function App() {
   const { theme } = useTheme();
@@ -45,7 +47,14 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
 
           <Route path="/companies" element={<ComingSoon title="Companies" />} />
-          <Route path="/users" element={<ComingSoon title="Users" />} />
+          <Route
+            path="/users"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <Users />
+              </RequireRole>
+            }
+          />
           <Route path="/roles" element={<ComingSoon title="Roles & Permissions" />} />
           <Route path="/fuel-logs" element={<ComingSoon title="Fuel Logs" />} />
           <Route path="/notifications" element={<ComingSoon title="Notifications" />} />

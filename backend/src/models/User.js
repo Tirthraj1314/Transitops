@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
       default: 'Driver',
       required: true,
     },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
