@@ -13,6 +13,9 @@ import Expenses from "./pages/Expenses";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import Users from "./pages/Users";
+import FuelLogs from "./pages/FuelLogs";
+import Revenue from "./pages/Revenue";
+import Invoices from "./pages/Invoices";
 import ComingSoon from "./pages/ComingSoon";
 import RequireRole from "./components/RequireRole";
 
@@ -56,7 +59,7 @@ export default function App() {
             }
           />
           <Route path="/roles" element={<ComingSoon title="Roles & Permissions" />} />
-          <Route path="/fuel-logs" element={<ComingSoon title="Fuel Logs" />} />
+          <Route path="/fuel-logs" element={<FuelLogs />} />
           <Route path="/notifications" element={<ComingSoon title="Notifications" />} />
           <Route path="/audit-logs" element={<ComingSoon title="Audit Logs" />} />
           <Route path="/settings" element={<ComingSoon title="Settings" />} />
@@ -65,8 +68,8 @@ export default function App() {
           <Route path="/compliance" element={<ComingSoon title="Compliance" />} />
           <Route path="/incidents" element={<ComingSoon title="Incidents" />} />
           <Route path="/safety-reports" element={<ComingSoon title="Safety Reports" />} />
-          <Route path="/revenue" element={<ComingSoon title="Revenue" />} />
-          <Route path="/invoices" element={<ComingSoon title="Invoices" />} />
+          <Route path="/revenue" element={<Revenue />} />
+          <Route path="/invoices" element={<Invoices />} />
           <Route path="/my-trips" element={<Trips />} />
           <Route path="/documents" element={<ComingSoon title="Documents" />} />
         </Route>

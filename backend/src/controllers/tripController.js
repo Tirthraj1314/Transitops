@@ -1,6 +1,7 @@
 const Trip = require('../models/Trip');
 const Vehicle = require('../models/Vehicle');
 const Driver = require('../models/Driver');
+const Invoice = require('../models/Invoice');
 
 // @desc  Create a trip (Draft status) — does NOT lock vehicle/driver yet
 // @route POST /api/trips
@@ -289,6 +290,21 @@ const completeTrip = async (req, res) => {
     }
 
     await trip.save();
+
+    // Auto-generate an invoice for completed trips with revenue attached
+    if (trip.revenue > 0) {
+      const existing = await Invoice.findOne({ trip: trip._id });
+      if (!existing) {
+        const invoiceNumber = `INV-${trip._id.toString().slice(-6).toUpperCase()}`;
+        await Invoice.create({
+          invoiceNumber,
+          trip: trip._id,
+          vehicle: trip.vehicle,
+          amount: trip.revenue,
+        });
+      }
+    }
+
     res.json({ message: 'Trip completed successfully', trip });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -38,6 +38,9 @@ app.use('/api/dashboard', dashboardRoutes);
 const reportRoutes = require('./src/routes/reportRoutes');
 app.use('/api/reports', reportRoutes);
 
+const invoiceRoutes = require('./src/routes/invoiceRoutes');
+app.use('/api/invoices', invoiceRoutes);
+
 app.get('/', (req, res) => {
   res.json({ message: 'TransitOps API is running' });
 });

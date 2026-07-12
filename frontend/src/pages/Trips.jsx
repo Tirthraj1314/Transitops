@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import StatusBadge from "../components/StatusBadge";
+import Modal from "../components/Modal";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { can } from "../utils/permissions";
@@ -15,6 +17,8 @@ function TripsManager() {
   const { user } = useAuth();
   const canManage = can(user?.role, "trips", "CRUD");
   const [trips, setTrips] = useState([]);
+  const [completingTrip, setCompletingTrip] = useState(null);
+  const completeForm = useForm();
 
   function loadTrips() {
     api
@@ -34,6 +38,22 @@ function TripsManager() {
       loadTrips();
     } catch (err) {
       toast.error(err.response?.data?.message || `Could not ${action} trip`);
+    }
+  }
+
+  async function submitComplete(values) {
+    try {
+      await api.patch(`/trips/${completingTrip._id}/complete`, {
+        finalOdometer: values.finalOdometer ? Number(values.finalOdometer) : undefined,
+        fuelConsumed: values.fuelConsumed ? Number(values.fuelConsumed) : undefined,
+        revenue: values.revenue ? Number(values.revenue) : undefined,
+      });
+      toast.success("Trip completed");
+      completeForm.reset();
+      setCompletingTrip(null);
+      loadTrips();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Could not complete trip");
     }
   }
 
@@ -88,7 +108,10 @@ function TripsManager() {
                       {(trip.status === "Dispatched" || trip.status === "In Progress") && (
                         <div className="flex gap-2">
                           <button
-                            onClick={() => runAction(trip._id, "complete")}
+                            onClick={() => {
+                              completeForm.reset();
+                              setCompletingTrip(trip);
+                            }}
                             className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700"
                           >
                             Complete
@@ -109,6 +132,35 @@ function TripsManager() {
           </tbody>
         </table>
       </div>
+
+      <Modal open={!!completingTrip} title="Complete Trip" onClose={() => setCompletingTrip(null)}>
+        <form onSubmit={completeForm.handleSubmit(submitComplete)} className="space-y-3">
+          <input
+            placeholder="Final odometer (km)"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...completeForm.register("finalOdometer")}
+          />
+          <input
+            placeholder="Fuel used (liters)"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...completeForm.register("fuelConsumed")}
+          />
+          <input
+            placeholder="Revenue (₹) — generates an invoice"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...completeForm.register("revenue")}
+          />
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-green-600 py-2 text-sm font-semibold text-white hover:bg-green-700"
+          >
+            Complete Trip
+          </button>
+        </form>
+      </Modal>
     </div>
   );
 }
