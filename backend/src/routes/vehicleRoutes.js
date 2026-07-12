@@ -6,10 +6,12 @@ const {
   getVehicleById,
   updateVehicle,
   deleteVehicle,
+  uploadVehicleDocument,
   getVehicleOperationalCost,
 } = require('../controllers/vehicleController');
 const { protect } = require('../middleware/authMiddleware');
 const authorizeRoles = require('../middleware/roleMiddleware');
+const upload = require('../middleware/upload');
 
 // All routes require authentication
 router.use(protect);
@@ -24,5 +26,7 @@ router.route('/:id')
   .get(getVehicleById)
   .put(authorizeRoles('Fleet Manager'), updateVehicle)
   .delete(authorizeRoles('Fleet Manager'), deleteVehicle);
+
+router.post('/:id/documents', authorizeRoles('Fleet Manager'), upload.single('file'), uploadVehicleDocument);
 
 module.exports = router;

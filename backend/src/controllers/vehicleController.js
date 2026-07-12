@@ -103,6 +103,25 @@ const deleteVehicle = async (req, res) => {
   }
 };
 
+// @desc  Upload a document (RC, Insurance, PUC, Fitness Certificate, etc.)
+// @route POST /api/vehicles/:id/documents
+const uploadVehicleDocument = async (req, res) => {
+  try {
+    const { label } = req.body;
+    if (!label) return res.status(400).json({ message: 'Document label is required' });
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+    const vehicle = await Vehicle.findById(req.params.id);
+    if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
+
+    vehicle.documents.push({ label, url: `/uploads/${req.file.filename}` });
+    await vehicle.save();
+    res.status(201).json(vehicle);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc  Get total operational cost breakdown for a vehicle
 // @route GET /api/vehicles/:id/cost
 const getVehicleOperationalCost = async (req, res) => {
@@ -140,5 +159,6 @@ module.exports = {
   getVehicleById,
   updateVehicle,
   deleteVehicle,
+  uploadVehicleDocument,
   getVehicleOperationalCost,
 };

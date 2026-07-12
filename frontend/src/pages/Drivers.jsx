@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiFile } from "react-icons/fi";
 import DriverTable from "../components/DriverTable";
 import Modal from "../components/Modal";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { can } from "../utils/permissions";
+
+const DOCUMENT_LABELS = ["Driving License", "Medical Certificate", "Police Verification", "Other"];
 
 export default function Drivers() {
   const { user } = useAuth();
@@ -14,8 +16,10 @@ export default function Drivers() {
   const [drivers, setDrivers] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [linkingDriver, setLinkingDriver] = useState(null);
+  const [documentsDriver, setDocumentsDriver] = useState(null);
   const { register, handleSubmit, reset } = useForm();
   const linkForm = useForm();
+  const docForm = useForm();
 
   function loadDrivers() {
     api
@@ -52,6 +56,21 @@ export default function Drivers() {
     }
   }
 
+  async function onUploadDocument(values) {
+    try {
+      const formData = new FormData();
+      formData.append("label", values.label);
+      formData.append("file", values.file[0]);
+      await api.post(`/drivers/${documentsDriver._id}/documents`, formData);
+      toast.success("Document uploaded");
+      docForm.reset();
+      loadDrivers();
+      setDocumentsDriver((prev) => ({ ...prev, documents: [...(prev.documents || []), { label: values.label }] }));
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Could not upload document");
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -73,6 +92,10 @@ export default function Drivers() {
         onLink={(driver) => {
           linkForm.reset({ email: "" });
           setLinkingDriver(driver);
+        }}
+        onDocuments={(driver) => {
+          docForm.reset();
+          setDocumentsDriver(driver);
         }}
       />
 
@@ -134,6 +157,55 @@ export default function Drivers() {
             className="w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white hover:bg-blue-700"
           >
             Save
+          </button>
+        </form>
+      </Modal>
+
+      <Modal
+        open={!!documentsDriver}
+        title={`Documents — ${documentsDriver?.name || ""}`}
+        onClose={() => setDocumentsDriver(null)}
+      >
+        <div className="mb-4 flex flex-wrap gap-2">
+          {documentsDriver?.documents?.length > 0 ? (
+            documentsDriver.documents.map((doc, i) => (
+              <a
+                key={i}
+                href={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api$/, "")}${doc.url || ""}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 rounded-lg bg-gray-50 px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              >
+                <FiFile size={12} />
+                {doc.label}
+              </a>
+            ))
+          ) : (
+            <p className="text-xs text-gray-400 dark:text-slate-500">No documents uploaded.</p>
+          )}
+        </div>
+        <form onSubmit={docForm.handleSubmit(onUploadDocument)} className="space-y-3">
+          <select
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...docForm.register("label", { required: true })}
+          >
+            {DOCUMENT_LABELS.map((label) => (
+              <option key={label} value={label}>
+                {label}
+              </option>
+            ))}
+          </select>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,application/pdf"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...docForm.register("file", { required: true })}
+          />
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+          >
+            Upload
           </button>
         </form>
       </Modal>

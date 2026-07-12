@@ -23,6 +23,7 @@ import Compliance from "./pages/Compliance";
 import Companies from "./pages/Companies";
 import RolesPermissions from "./pages/RolesPermissions";
 import Settings from "./pages/Settings";
+import VehicleDocuments from "./pages/VehicleDocuments";
 import ComingSoon from "./pages/ComingSoon";
 import RequireRole from "./components/RequireRole";
 
@@ -98,7 +99,7 @@ export default function App() {
               </RequireRole>
             }
           />
-          <Route path="/vehicle-documents" element={<ComingSoon title="Vehicle Documents" />} />
+          <Route path="/vehicle-documents" element={<VehicleDocuments />} />
           <Route path="/live-tracking" element={<ComingSoon title="Live Tracking" />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/incidents" element={<Incidents />} />

@@ -14,6 +14,13 @@ const vehicleSchema = new mongoose.Schema(
       default: 'Available',
     },
     region: { type: String }, // used for dashboard filters
+    documents: [
+      {
+        label: { type: String, required: true }, // e.g. "RC", "Insurance", "PUC", "Fitness Certificate"
+        url: { type: String, required: true },
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

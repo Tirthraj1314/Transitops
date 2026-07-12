@@ -15,6 +15,13 @@ const driverSchema = new mongoose.Schema(
     },
     // Links this driver record to a Driver-role login account, if one exists.
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true, sparse: true },
+    documents: [
+      {
+        label: { type: String, required: true }, // e.g. "Driving License", "Medical Certificate", "Police Verification"
+        url: { type: String, required: true },
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

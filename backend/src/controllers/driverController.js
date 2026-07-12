@@ -144,6 +144,25 @@ const linkDriverUser = async (req, res) => {
   }
 };
 
+// @desc  Upload a document (Driving License, Medical Certificate, Police Verification, etc.)
+// @route POST /api/drivers/:id/documents
+const uploadDriverDocument = async (req, res) => {
+  try {
+    const { label } = req.body;
+    if (!label) return res.status(400).json({ message: 'Document label is required' });
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+    const driver = await Driver.findById(req.params.id);
+    if (!driver) return res.status(404).json({ message: 'Driver not found' });
+
+    driver.documents.push({ label, url: `/uploads/${req.file.filename}` });
+    await driver.save();
+    res.status(201).json(driver);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc  Delete driver
 // @route DELETE /api/drivers/:id
 const deleteDriver = async (req, res) => {
@@ -166,5 +185,6 @@ module.exports = {
   updateDriver,
   updateDriverSafety,
   linkDriverUser,
+  uploadDriverDocument,
   deleteDriver,
 };

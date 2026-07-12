@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const multer = require('multer');
 const connectDB = require('./src/config/db');
 
 connectDB();
@@ -8,6 +10,7 @@ connectDB();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const authRoutes = require('./src/routes/authRoutes');
 app.use('/api/auth', authRoutes);
@@ -55,6 +58,15 @@ app.use('/api/companies', companyRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'TransitOps API is running' });
+});
+
+// Multer throws errors (file too large, wrong type) that would otherwise
+// hit Express's default HTML error page instead of returning JSON.
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message?.includes('allowed')) {
+    return res.status(400).json({ message: err.message });
+  }
+  next(err);
 });
 
 const PORT = process.env.PORT || 5000;
