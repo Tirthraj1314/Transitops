@@ -14,7 +14,7 @@ export default function Drivers() {
   function loadDrivers() {
     api
       .get("/drivers")
-      .then(({ data }) => setDrivers(data.drivers || []))
+      .then(({ data }) => setDrivers(data || []))
       .catch(() => {
         // driver data unavailable until the backend is connected
       });
@@ -62,9 +62,20 @@ export default function Drivers() {
             {...register("licenseNumber", { required: true })}
           />
           <input
-            placeholder="Phone"
+            placeholder="License category (e.g. LMV, HMV)"
             className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-            {...register("phone")}
+            {...register("licenseCategory", { required: true })}
+          />
+          <input
+            placeholder="License expiry date"
+            type="date"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("licenseExpiryDate", { required: true })}
+          />
+          <input
+            placeholder="Contact number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("contactNumber", { required: true })}
           />
           <button
             type="submit"

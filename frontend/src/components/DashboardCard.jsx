@@ -8,10 +8,10 @@ const ACCENT_STYLES = {
   red: "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
 };
 
-export default function DashboardCard({ title, value, icon: Icon, accent = "blue", prefix = "" }) {
+export default function DashboardCard({ title, value, icon: Icon, accent = "blue", prefix = "", suffix = "" }) {
   const isNumeric = Number.isFinite(Number(value));
   const animatedValue = useCountUp(isNumeric ? value : 0);
-  const displayValue = isNumeric ? `${prefix}${animatedValue.toLocaleString()}` : value;
+  const displayValue = isNumeric ? `${prefix}${animatedValue.toLocaleString()}${suffix}` : value;
 
   return (
     <motion.div

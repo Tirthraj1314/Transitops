@@ -100,10 +100,6 @@ const deleteVehicle = async (req, res) => {
   }
 };
 
-const FuelLog = require('../models/FuelLog');
-const Maintenance = require('../models/Maintenance');
-const Expense = require('../models/Expense');
-
 // @desc  Get total operational cost breakdown for a vehicle
 // @route GET /api/vehicles/:id/cost
 const getVehicleOperationalCost = async (req, res) => {

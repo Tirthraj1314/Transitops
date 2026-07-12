@@ -7,7 +7,7 @@ export default function Expenses() {
   useEffect(() => {
     api
       .get("/expenses")
-      .then(({ data }) => setExpenses(data.expenses || []))
+      .then(({ data }) => setExpenses(data || []))
       .catch(() => {
         // expense data unavailable until the backend is connected
       });
@@ -43,10 +43,14 @@ export default function Expenses() {
               </tr>
             ) : (
               expenses.map((expense) => (
-                <tr key={expense.id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{expense.date}</td>
+                <tr key={expense._id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">
+                    {expense.date ? new Date(expense.date).toLocaleDateString() : "-"}
+                  </td>
                   <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">{expense.category}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{expense.vehicle}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">
+                    {expense.vehicle?.registrationNumber || "-"}
+                  </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-slate-300">₹{expense.amount?.toLocaleString()}</td>
                 </tr>
               ))

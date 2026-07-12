@@ -14,7 +14,7 @@ export default function Vehicles() {
   function loadVehicles() {
     api
       .get("/vehicles")
-      .then(({ data }) => setVehicles(data.vehicles || []))
+      .then(({ data }) => setVehicles(data || []))
       .catch(() => {
         // vehicle data unavailable until the backend is connected
       });
@@ -24,7 +24,12 @@ export default function Vehicles() {
 
   async function onAddVehicle(payload) {
     try {
-      await api.post("/vehicles", payload);
+      await api.post("/vehicles", {
+        ...payload,
+        maxLoadCapacity: Number(payload.maxLoadCapacity),
+        acquisitionCost: Number(payload.acquisitionCost),
+        odometer: payload.odometer ? Number(payload.odometer) : 0,
+      });
       toast.success("Vehicle added");
       reset();
       setModalOpen(false);
@@ -52,14 +57,36 @@ export default function Vehicles() {
       <Modal open={isModalOpen} title="Add Vehicle" onClose={() => setModalOpen(false)}>
         <form onSubmit={handleSubmit(onAddVehicle)} className="space-y-3">
           <input
-            placeholder="Vehicle number"
+            placeholder="Registration number"
             className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-            {...register("number", { required: true })}
+            {...register("registrationNumber", { required: true })}
+          />
+          <input
+            placeholder="Name (e.g. Van-05)"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("name", { required: true })}
           />
           <input
             placeholder="Type (Truck, Van, ...)"
             className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             {...register("type", { required: true })}
+          />
+          <input
+            placeholder="Max load capacity (kg)"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("maxLoadCapacity", { required: true })}
+          />
+          <input
+            placeholder="Acquisition cost"
+            type="number"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("acquisitionCost", { required: true })}
+          />
+          <input
+            placeholder="Region"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            {...register("region")}
           />
           <input
             placeholder="Odometer (km)"

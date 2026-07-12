@@ -1,18 +1,31 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import StatusBadge from "../components/StatusBadge";
 import api from "../services/api";
 
 export default function Trips() {
   const [trips, setTrips] = useState([]);
 
-  useEffect(() => {
+  function loadTrips() {
     api
       .get("/trips")
-      .then(({ data }) => setTrips(data.trips || []))
+      .then(({ data }) => setTrips(data || []))
       .catch(() => {
         // trip data unavailable until the backend is connected
       });
-  }, []);
+  }
+
+  useEffect(loadTrips, []);
+
+  async function runAction(id, action) {
+    try {
+      await api.patch(`/trips/${id}/${action}`);
+      toast.success(`Trip ${action}d`);
+      loadTrips();
+    } catch (err) {
+      toast.error(err.response?.data?.message || `Could not ${action} trip`);
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -25,8 +38,8 @@ export default function Trips() {
               <th className="px-4 py-3">Route</th>
               <th className="px-4 py-3">Vehicle</th>
               <th className="px-4 py-3">Driver</th>
-              <th className="px-4 py-3">Departure</th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -38,13 +51,42 @@ export default function Trips() {
               </tr>
             ) : (
               trips.map((trip) => (
-                <tr key={trip.id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
-                  <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">{trip.route}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.vehicle}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.driver}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.departureTime}</td>
+                <tr key={trip._id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
+                  <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">
+                    {trip.source} → {trip.destination}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">
+                    {trip.vehicle?.registrationNumber || "-"}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.driver?.name || "-"}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={trip.status} />
+                  </td>
+                  <td className="px-4 py-3">
+                    {trip.status === "Draft" && (
+                      <button
+                        onClick={() => runAction(trip._id, "dispatch")}
+                        className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+                      >
+                        Dispatch
+                      </button>
+                    )}
+                    {trip.status === "Dispatched" && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => runAction(trip._id, "complete")}
+                          className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700"
+                        >
+                          Complete
+                        </button>
+                        <button
+                          onClick={() => runAction(trip._id, "cancel")}
+                          className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))

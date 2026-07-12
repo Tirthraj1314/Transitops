@@ -8,7 +8,7 @@ export default function Maintenance() {
   useEffect(() => {
     api
       .get("/maintenance")
-      .then(({ data }) => setRecords(data.records || []))
+      .then(({ data }) => setRecords(data || []))
       .catch(() => {
         // maintenance data unavailable until the backend is connected
       });
@@ -23,8 +23,8 @@ export default function Maintenance() {
           <thead className="border-b bg-gray-50 text-gray-500 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">Vehicle</th>
-              <th className="px-4 py-3">Service Type</th>
-              <th className="px-4 py-3">Scheduled Date</th>
+              <th className="px-4 py-3">Type</th>
+              <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Cost</th>
               <th className="px-4 py-3">Status</th>
             </tr>
@@ -38,10 +38,14 @@ export default function Maintenance() {
               </tr>
             ) : (
               records.map((record) => (
-                <tr key={record.id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
-                  <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">{record.vehicle}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{record.serviceType}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{record.scheduledDate}</td>
+                <tr key={record._id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
+                  <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">
+                    {record.vehicle?.registrationNumber || "-"}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{record.type}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">
+                    {record.date ? new Date(record.date).toLocaleDateString() : "-"}
+                  </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-slate-300">₹{record.cost?.toLocaleString()}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={record.status} />
