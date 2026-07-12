@@ -21,6 +21,8 @@ import AuditLogs from "./pages/AuditLogs";
 import Incidents from "./pages/Incidents";
 import Compliance from "./pages/Compliance";
 import Companies from "./pages/Companies";
+import RolesPermissions from "./pages/RolesPermissions";
+import Settings from "./pages/Settings";
 import ComingSoon from "./pages/ComingSoon";
 import RequireRole from "./components/RequireRole";
 
@@ -70,7 +72,14 @@ export default function App() {
               </RequireRole>
             }
           />
-          <Route path="/roles" element={<ComingSoon title="Roles & Permissions" />} />
+          <Route
+            path="/roles"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <RolesPermissions />
+              </RequireRole>
+            }
+          />
           <Route path="/fuel-logs" element={<FuelLogs />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route
@@ -81,7 +90,14 @@ export default function App() {
               </RequireRole>
             }
           />
-          <Route path="/settings" element={<ComingSoon title="Settings" />} />
+          <Route
+            path="/settings"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <Settings />
+              </RequireRole>
+            }
+          />
           <Route path="/vehicle-documents" element={<ComingSoon title="Vehicle Documents" />} />
           <Route path="/live-tracking" element={<ComingSoon title="Live Tracking" />} />
           <Route path="/compliance" element={<Compliance />} />
