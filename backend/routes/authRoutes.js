@@ -6,13 +6,14 @@ import {
   logout,
   changePassword,
 } from "../controllers/authController.js";
+import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
-router.get("/me", getMe);
+router.get("/me", protect, getMe);
 router.post("/logout", logout);
-router.put("/change-password", changePassword);
+router.put("/change-password", protect, changePassword);
 
 export default router;

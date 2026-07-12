@@ -8,8 +8,6 @@ import generateToken from "../utils/generateToken.js";
  */
 export const register = async (req, res) => {
   try {
-    console.log("REGISTER BODY:", req.body);
-
     const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password) {
@@ -69,8 +67,6 @@ export const register = async (req, res) => {
  */
 export const login = async (req, res) => {
   try {
-    console.log("LOGIN BODY:", req.body);
-
     const { email, password } = req.body;
 
     if (!email || !password) {
