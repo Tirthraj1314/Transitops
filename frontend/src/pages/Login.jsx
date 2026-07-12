@@ -17,7 +17,11 @@ export default function Login() {
       await login(email, password);
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid email or password");
+      if (err.response) {
+        toast.error(err.response.data?.message || "Invalid email or password");
+      } else {
+        toast.error("Cannot reach the server. Is the backend running?");
+      }
     }
   }
 
