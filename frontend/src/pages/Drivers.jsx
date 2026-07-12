@@ -4,11 +4,15 @@ import toast from "react-hot-toast";
 import { FiPlus, FiFile } from "react-icons/fi";
 import DriverTable from "../components/DriverTable";
 import Modal from "../components/Modal";
+import TableSearch from "../components/TableSearch";
+import Pagination from "../components/Pagination";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { can } from "../utils/permissions";
+import { useTableControls } from "../hooks/useTableControls";
 
 const DOCUMENT_LABELS = ["Driving License", "Medical Certificate", "Police Verification", "Other"];
+const SEARCH_FIELDS = ["name", "licenseNumber", "contactNumber", "status"];
 
 export default function Drivers() {
   const { user } = useAuth();
@@ -20,6 +24,8 @@ export default function Drivers() {
   const { register, handleSubmit, reset } = useForm();
   const linkForm = useForm();
   const docForm = useForm();
+  const { search, setSearch, sortKey, sortDir, toggleSort, page, setPage, totalPages, totalCount, rows } =
+    useTableControls(drivers, { searchFields: SEARCH_FIELDS });
 
   function loadDrivers() {
     api
@@ -86,18 +92,28 @@ export default function Drivers() {
         )}
       </div>
 
-      <DriverTable
-        drivers={drivers}
-        canLink={canManage}
-        onLink={(driver) => {
-          linkForm.reset({ email: "" });
-          setLinkingDriver(driver);
-        }}
-        onDocuments={(driver) => {
-          docForm.reset();
-          setDocumentsDriver(driver);
-        }}
-      />
+      <div className="max-w-xs">
+        <TableSearch value={search} onChange={setSearch} placeholder="Search drivers..." />
+      </div>
+
+      <div className="rounded-xl bg-white shadow-sm dark:bg-slate-900">
+        <DriverTable
+          drivers={rows}
+          canLink={canManage}
+          sortKey={sortKey}
+          sortDir={sortDir}
+          onSort={toggleSort}
+          onLink={(driver) => {
+            linkForm.reset({ email: "" });
+            setLinkingDriver(driver);
+          }}
+          onDocuments={(driver) => {
+            docForm.reset();
+            setDocumentsDriver(driver);
+          }}
+        />
+        <Pagination page={page} totalPages={totalPages} totalCount={totalCount} onPageChange={setPage} />
+      </div>
 
       <Modal open={isModalOpen && canManage} title="Add Driver" onClose={() => setModalOpen(false)}>
         <form onSubmit={handleSubmit(onAddDriver)} className="space-y-3">

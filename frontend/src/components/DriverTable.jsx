@@ -1,7 +1,17 @@
 import { FiFile } from "react-icons/fi";
 import StatusBadge from "./StatusBadge";
+import SortableHeader from "./SortableHeader";
 
-export default function DriverTable({ drivers = [], onSelect, onLink, onDocuments, canLink = false }) {
+export default function DriverTable({
+  drivers = [],
+  onSelect,
+  onLink,
+  onDocuments,
+  canLink = false,
+  sortKey,
+  sortDir,
+  onSort,
+}) {
   if (drivers.length === 0) {
     return (
       <p className="p-6 text-center text-sm text-gray-500 dark:text-slate-400">No drivers found.</p>
@@ -9,15 +19,15 @@ export default function DriverTable({ drivers = [], onSelect, onLink, onDocument
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl bg-white shadow-sm dark:bg-slate-900">
+    <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="border-b bg-gray-50 text-gray-500 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400">
           <tr>
-            <th className="px-4 py-3">Name</th>
-            <th className="px-4 py-3">License No.</th>
+            <SortableHeader label="Name" sortKey="name" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
+            <SortableHeader label="License No." sortKey="licenseNumber" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
             <th className="px-4 py-3">Contact</th>
-            <th className="px-4 py-3">Safety Score</th>
-            <th className="px-4 py-3">Status</th>
+            <SortableHeader label="Safety Score" sortKey="safetyScore" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
+            <SortableHeader label="Status" sortKey="status" activeKey={sortKey} activeDir={sortDir} onSort={onSort} />
             {canLink && <th className="px-4 py-3">Login Account</th>}
             {canLink && <th className="px-4 py-3">Documents</th>}
           </tr>

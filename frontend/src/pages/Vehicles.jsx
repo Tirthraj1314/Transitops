@@ -4,9 +4,14 @@ import toast from "react-hot-toast";
 import { FiPlus } from "react-icons/fi";
 import VehicleTable from "../components/VehicleTable";
 import Modal from "../components/Modal";
+import TableSearch from "../components/TableSearch";
+import Pagination from "../components/Pagination";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { can } from "../utils/permissions";
+import { useTableControls } from "../hooks/useTableControls";
+
+const SEARCH_FIELDS = ["registrationNumber", "name", "type", "status"];
 
 export default function Vehicles() {
   const { user } = useAuth();
@@ -14,6 +19,8 @@ export default function Vehicles() {
   const [vehicles, setVehicles] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm();
+  const { search, setSearch, sortKey, sortDir, toggleSort, page, setPage, totalPages, totalCount, rows } =
+    useTableControls(vehicles, { searchFields: SEARCH_FIELDS });
 
   function loadVehicles() {
     api
@@ -58,7 +65,14 @@ export default function Vehicles() {
         )}
       </div>
 
-      <VehicleTable vehicles={vehicles} />
+      <div className="max-w-xs">
+        <TableSearch value={search} onChange={setSearch} placeholder="Search vehicles..." />
+      </div>
+
+      <div className="rounded-xl bg-white shadow-sm dark:bg-slate-900">
+        <VehicleTable vehicles={rows} sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
+        <Pagination page={page} totalPages={totalPages} totalCount={totalCount} onPageChange={setPage} />
+      </div>
 
       <Modal open={isModalOpen && canManage} title="Add Vehicle" onClose={() => setModalOpen(false)}>
         <form onSubmit={handleSubmit(onAddVehicle)} className="space-y-3">
