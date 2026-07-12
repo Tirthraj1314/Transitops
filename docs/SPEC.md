@@ -1,127 +1,205 @@
-# TransitOps — Master Project Specification
+# TransitOps — Complete Role-Based Access Control (RBAC) Specification
 
-**Project Name:** TransitOps — Smart Transport Operations Platform
+**Project Name:** TransitOps — Smart Transport Operations Platform (enterprise-grade TMS)
+
+> Supersedes the earlier 5-role draft of this spec. Every role has its own dashboard, sidebar,
+> permissions, workflow, and UI. Users only see the modules assigned to their role. Unauthorized
+> routes must be inaccessible both in the UI and the backend APIs.
 
 ## Project Goal
 
-A modern SaaS web application for transport companies to manage the complete lifecycle of fleet operations, replacing Excel sheets and paper logs. Covers:
-
-- Vehicles
-- Drivers
-- Trips
-- Maintenance
-- Fuel
-- Expenses
-- Reports
-- Analytics
-- User Roles
-
-Everything automated with proper validations.
+A modern SaaS web application for transport companies to manage the complete lifecycle of fleet
+operations, replacing Excel sheets and paper logs: vehicles, drivers, trips, maintenance, fuel,
+expenses, reports, analytics, and user roles — all automated with proper validations.
 
 ## User Roles
 
-There are 5 user roles: **Super Admin**, **Fleet Manager**, **Dispatcher**, **Safety Officer**, **Finance Manager**.
+There are **6** user roles: **Super Admin**, **Fleet Manager**, **Dispatcher / Operations Manager**,
+**Safety Officer**, **Finance Manager**, **Driver**.
 
 ---
 
 ### 1. Super Admin
 
-Highest authority. No restrictions.
+Manages the complete application.
 
-**Can:** Manage users, manage roles, view all companies, system settings, reports, dashboard, backup, audit logs.
+**Dashboard cards:** Total Companies, Total Users, Total Vehicles, Total Drivers, Active Trips,
+Vehicles in Maintenance, Monthly Revenue, Monthly Expenses, Fleet Utilization %, System Health
 
-**Sidebar:** Dashboard, Companies, Users, Roles, Fleet, Drivers, Trips, Maintenance, Fuel, Expenses, Reports, Settings, Audit Logs, Profile
+**Dashboard charts:** Revenue vs Expense, Trips Per Month, Fleet Utilization, Vehicle Status, Driver Status
 
-**Dashboard widgets:** Total Companies, Total Vehicles, Active Trips, Maintenance, Revenue, Expenses, Fleet Utilization, Charts
+**Sidebar:** Dashboard, Companies, Users, Roles & Permissions, Vehicles, Drivers, Trips,
+Maintenance, Fuel Logs, Expenses, Reports, Notifications, Audit Logs, Settings, Profile
+
+**Can create:** Company, User, Role, Vehicle, Driver, Trip, Maintenance, Fuel Log, Expense
+
+**Can edit:** Everything **Can delete:** Everything except System Roles **Can view:** Everything
+
+**Features:** Manage Companies, Manage Users, Assign Roles, Manage Permissions, Reset Password,
+Activate/Deactivate User, View Audit Logs, System Settings, Backup Database, Notification
+Management, Analytics
 
 ---
 
 ### 2. Fleet Manager
 
-Responsible for vehicles.
+Responsible for fleet and vehicle management.
 
-**Can:** Add/Edit/Delete Vehicle, Vehicle Documents, Maintenance, Assign Vehicles, Vehicle Analytics
+**Dashboard cards:** Available Vehicles, Vehicles On Trip, Vehicles In Maintenance, Retired
+Vehicles, Upcoming Service, Fleet Utilization
 
-**Cannot:** Financial Settings, Manage Users
+**Dashboard charts:** Vehicle Usage, Maintenance Cost, Vehicle Type Distribution
 
-**Sidebar:** Dashboard, Vehicles, Maintenance, Documents, Trips, Reports, Profile
+**Sidebar:** Dashboard, Vehicles, Maintenance, Vehicle Documents, Trip History, Reports, Profile
 
-**Dashboard widgets:** Available Vehicles, Vehicles on Trip, Maintenance Vehicles, Retired Vehicles, Vehicle Utilization, Recent Trips, Upcoming Maintenance
+**Vehicle module — can:** Add/Edit/Delete Vehicle, Upload RC, Upload Insurance, Upload PUC,
+Upload Fitness Certificate, Upload Images, Update Odometer, Retire Vehicle, Schedule Maintenance
 
-**Vehicle Details Page fields:** Registration Number, Model, Vehicle Type, Manufacturer, Year, Color, Insurance, PUC, Fitness Certificate, Registration Date, Purchase Cost, Current Value, Load Capacity, Fuel Type, Mileage, Status, Location, GPS, Documents, Images, Service History, Trip History, Fuel History, Expenses
+**Vehicle Details fields:** Registration Number, Vehicle Name, Model, Manufacturer, Year, Fuel
+Type, Vehicle Type, Capacity, Mileage, Purchase Cost, Purchase Date, Insurance Expiry, Fitness
+Expiry, PUC Expiry, Odometer, GPS Device, Status, Images, Documents
 
-**Buttons:** Edit, Delete, Upload Documents, View Trips, Schedule Maintenance, Retire Vehicle
+**Maintenance:** Create Maintenance, Update Maintenance, Close Maintenance, Upload Bills, Assign
+Mechanic
+
+**Cannot:** Manage Users, Financial Reports, Role Management
 
 ---
 
-### 3. Dispatcher
+### 3. Dispatcher / Operations Manager
 
-Creates trips.
+Responsible for creating and managing trips.
 
-**Can:** Create Trip, Assign Vehicle, Assign Driver, Track Trip, Complete Trip, Cancel Trip
+**Dashboard cards:** Today's Trips, Pending Trips, Running Trips, Completed Trips, Available
+Vehicles, Available Drivers, Delayed Trips
 
-**Cannot:** Edit Vehicle, Delete Drivers, Financial Reports
+**Sidebar:** Dashboard, Trips, Drivers, Vehicles, Live Tracking, Trip History, Reports, Profile
 
-**Sidebar:** Dashboard, Trips, Vehicles, Drivers, Map, Reports, Profile
+**Trip module — can:** Create/Edit Trip, Dispatch Trip, Complete Trip, Cancel Trip, Assign
+Vehicle, Assign Driver, Track Trip
 
-**Dashboard widgets:** Today's Trips, Pending Trips, Completed Trips, Delayed Trips, Vehicle Availability, Driver Availability
+**Trip form fields:** Customer, Pickup Location, Destination, Vehicle, Driver, Cargo Type, Cargo
+Weight, Distance, Estimated Time, Priority, Notes, Expected Cost, Expected Revenue
 
-**Trip Creation Screen fields:** Source, Destination, Customer, Vehicle, Driver, Cargo Weight, Distance, Expected Time, Trip Start, Trip End, Cargo Type, Priority, Special Notes
+**Validation rules:** Vehicle Available, Driver Available, License Valid, Insurance Valid, Vehicle
+Not In Maintenance, Vehicle Not Retired, Cargo Within Capacity
 
-**Buttons:** Save Draft, Dispatch, Cancel
+**Status workflow:** Draft → Scheduled → Dispatched → In Progress → Completed **or** Cancelled
 
-**Automatic validation on dispatch:** vehicle available, driver available, license valid, vehicle not in maintenance, cargo within limit, driver not suspended, vehicle not retired
+**Automatic changes —**
+- On Dispatch: Vehicle → On Trip, Driver → On Trip
+- On Complete: Vehicle → Available, Driver → Available, Trip → Completed
 
-**Trip status flow:** Draft → Scheduled → Dispatched → In Progress → Completed / Cancelled
-
-- **On Dispatch:** Vehicle Available → On Trip; Driver Available → On Trip
-- **On Complete:** Vehicle → Available; Driver → Available; Trip → Completed
+**Cannot:** Delete Vehicles, Manage Users, Financial Reports
 
 ---
 
 ### 4. Safety Officer
 
-Responsible for compliance.
+Responsible for driver compliance and safety.
 
-**Can:** View Drivers, Update Safety Score, View Incidents, License Expiry, Compliance Reports
+**Dashboard cards:** Expired Licenses, Licenses Expiring Soon, Suspended Drivers, Safety Score,
+Incidents, Violations
 
-**Cannot:** Financial Data, Vehicle Purchase
+**Sidebar:** Dashboard, Drivers, Compliance, Incidents, Safety Reports, Profile
 
-**Sidebar:** Dashboard, Drivers, Compliance, Incidents, Reports, Profile
+**Driver module — can:** Add/Edit Driver, Suspend Driver, Activate Driver, Upload Driving
+License, Upload Medical Certificate, Upload Police Verification, Update Safety Score
 
-**Dashboard widgets:** Expiring Licenses, Suspended Drivers, Accidents, Safety Score Average
+**Driver Details fields:** Name, Photo, DOB, Phone, Address, Emergency Contact, Blood Group,
+License Number, License Category, License Expiry, Medical Expiry, Experience, Safety Score,
+Driving History, Incident History, Documents
 
-**Driver Profile fields:** Name, Photo, License, Expiry, Phone, Emergency Contact, Experience, Blood Group, Safety Score, Medical Certificate, Driving Category, Address, Past Trips, Incidents, Documents
+**Compliance:** License Expiry Alert, Medical Expiry Alert, Driver Blacklist, Suspension, Incident
+Report
 
-**License expiry alerts:** 30 days, 15 days, 7 days, Expired
+**Cannot:** Financial Reports, Trip Dispatch, Vehicle Purchase
 
 ---
 
 ### 5. Finance Manager
 
-Responsible for money.
+Responsible for all financial activities.
 
-**Can:** Fuel, Expenses, Revenue, Profit, Reports
+**Dashboard cards:** Today's Fuel Cost, Monthly Fuel Cost, Maintenance Cost, Revenue, Profit,
+Pending Expenses
 
-**Cannot:** Assign Trips, Manage Drivers, Delete Vehicles
+**Dashboard charts:** Monthly Expense, Fuel Trend, Profit Trend, Vehicle ROI, Cost Breakdown
 
-**Sidebar:** Dashboard, Fuel, Expenses, Revenue, Reports, Analytics, Invoices, Profile
+**Sidebar:** Dashboard, Fuel Logs, Expenses, Revenue, Invoices, Reports, Analytics, Profile
 
-**Dashboard widgets:** Today's Fuel, Monthly Fuel, Maintenance Cost, Trip Revenue, Profit, Expenses, Charts
+**Fuel module — can:** Add/Edit/Delete Fuel Entry, Upload Fuel Bill
 
-**Fuel Entry fields:** Vehicle, Trip, Date, Fuel Quantity, Price Per Liter, Total Cost, Fuel Station, Bill Upload
+**Fuel fields:** Vehicle, Trip, Fuel Station, Quantity, Price Per Liter, Total Cost, Date, Invoice
 
-**Expense Entry fields:** Vehicle, Trip, Expense Type, Amount, Vendor, Bill Upload, Remarks
+**Expense fields:** Expense Type, Vehicle, Trip, Vendor, Amount, GST, Invoice, Remarks, Date
 
-**Expense types:** Fuel, Maintenance, Repair, Insurance, Tyre, Permit, Fine, Toll, Parking, Miscellaneous
+**Expense types:** Fuel, Repair, Maintenance, Insurance, Tyres, Battery, Permit, Toll, Parking,
+Fine, Miscellaneous
 
-**Reports:** Fuel Efficiency, Cost per KM, Vehicle ROI, Profit, Monthly Expense, Revenue, Vehicle Comparison
+**Reports:** Fuel Efficiency, Cost Per KM, Vehicle ROI, Profit Report, Monthly Expense, Revenue
+Report
+
+**Cannot:** Assign Trips, Manage Users, Delete Vehicles
 
 ---
 
-## Common Features (all roles)
+### 6. Driver
 
-Login, Forgot Password, Change Password, Notifications, Profile, Dark Mode, Search / Global Search, Filters, Sorting, Pagination, Export CSV, Export PDF, Print
+Performs assigned deliveries.
+
+**Dashboard cards:** Assigned Trips, Completed Trips, Upcoming Trips, Assigned Vehicle, Safety Score
+
+**Sidebar:** Dashboard, My Trips, Trip History, Documents, Notifications, Profile
+
+**Can:** View Assigned Trips, Accept Trip, Reject Trip, Start Trip, Update Trip Status, Upload
+Delivery Proof, Upload Customer Signature, Upload Photos, Report Breakdown, Report Accident,
+Complete Trip, Enter Final Odometer, Enter Fuel Used
+
+**Cannot:** Create Trips, Assign Vehicles, Manage Drivers, Financial Reports, Vehicle Management,
+User Management
+
+---
+
+## Common Business Rules
+
+1. Vehicle Registration Number must be unique.
+2. Driver License must be valid.
+3. Expired License → Cannot Assign Trip.
+4. Suspended Driver → Cannot Assign Trip.
+5. Vehicle In Maintenance → Cannot Dispatch.
+6. Retired Vehicle → Cannot Dispatch.
+7. Vehicle Already On Trip → Cannot Assign Again.
+8. Driver Already On Trip → Cannot Assign Again.
+9. Cargo Weight cannot exceed Vehicle Capacity.
+10. Dispatch Trip automatically changes Vehicle → On Trip, Driver → On Trip.
+11. Complete Trip automatically changes Vehicle → Available, Driver → Available.
+12. Maintenance Started → Vehicle → In Maintenance.
+13. Maintenance Completed → Vehicle → Available.
+
+## Role Permission Matrix
+
+| Module | Super Admin | Fleet Manager | Dispatcher | Safety Officer | Finance | Driver |
+|---|---|---|---|---|---|---|
+| Dashboard | Full | Fleet | Operations | Safety | Finance | Personal |
+| Users | CRUD | No | No | No | No | No |
+| Roles | CRUD | No | No | No | No | No |
+| Vehicles | CRUD | CRUD | View | View | View | Assigned Only |
+| Drivers | CRUD | View | View | CRUD | View | Self |
+| Trips | CRUD | View | CRUD | View | View | Assigned Only |
+| Maintenance | CRUD | CRUD | View | View | View | No |
+| Fuel Logs | CRUD | View | View | No | CRUD | Own |
+| Expenses | CRUD | View | No | No | CRUD | No |
+| Reports | All | Fleet | Operations | Safety | Finance | Personal |
+| Settings | Full | No | No | No | No | No |
+| Audit Logs | Full | No | No | No | No | No |
+
+## UI Requirements (every role)
+
+Separate dashboard, sidebar, navigation, statistics, permissions, and API authorization per role;
+responsive design; dark mode; search; filters; sorting; pagination; export CSV; export PDF;
+notification center; profile management; role badge; activity timeline. Each dashboard only shows
+information relevant to that role.
 
 ## Status Enums
 
@@ -130,28 +208,18 @@ Login, Forgot Password, Change Password, Notifications, Profile, Dark Mode, Sear
 - **Trip status:** Draft, Scheduled, Dispatched, In Progress, Completed, Cancelled
 - **Maintenance status:** Pending, In Progress, Completed, Cancelled
 
-## Business Rules
-
-- Registration number must be unique
-- Driver license is mandatory
-- Expired license → cannot assign to a trip
-- Retired vehicle → cannot dispatch
-- Vehicle in maintenance → cannot dispatch
-- Cargo weight over vehicle capacity → reject
-- Driver already on a trip → reject new assignment
-- Vehicle already on a trip → reject new assignment
-- Trip completes → vehicle becomes available, driver becomes available
-- Maintenance starts → vehicle goes into shop (unavailable)
-- Maintenance ends → vehicle becomes available
-
 ## Database Tables
 
-Users, Roles, Companies, Vehicles, VehicleDocuments, Drivers, DriverDocuments, Trips, TripStops, Maintenance, MaintenanceParts, FuelLogs, Expenses, Revenue, Notifications, AuditLogs, Settings, Permissions, ActivityLogs
+Users, Roles, Companies, Vehicles, VehicleDocuments, Drivers, DriverDocuments, Trips, TripStops,
+Maintenance, MaintenanceParts, FuelLogs, Expenses, Revenue, Notifications, AuditLogs, Settings,
+Permissions, ActivityLogs
 
-## Dashboard Charts
+## Dashboard Charts (reference set)
 
-Fleet Utilization, Revenue, Monthly Trips, Vehicle Usage, Fuel Consumption, Maintenance Cost, Expense Breakdown, Driver Safety Score, Trip Success Rate, Vehicle ROI
+Fleet Utilization, Revenue, Monthly Trips, Vehicle Usage, Fuel Consumption, Maintenance Cost,
+Expense Breakdown, Driver Safety Score, Trip Success Rate, Vehicle ROI
 
 ## Notifications
 
-License Expiry, Insurance Expiry, Maintenance Due, Trip Started, Trip Completed, Vehicle Breakdown, Fuel Added, Expense Added, New User, Password Changed
+License Expiry, Insurance Expiry, Maintenance Due, Trip Started, Trip Completed, Vehicle
+Breakdown, Fuel Added, Expense Added, New User, Password Changed
