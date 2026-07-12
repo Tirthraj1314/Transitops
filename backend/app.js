@@ -21,12 +21,4 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/test", (req, res) => {
-  console.log("BODY:", req.body);
-
-  res.json({
-    body: req.body,
-  });
-});
-
 export default app;
