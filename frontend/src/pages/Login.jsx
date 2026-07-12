@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 
@@ -60,6 +60,13 @@ export default function Login() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          New here?{" "}
+          <Link to="/signup" className="font-medium text-blue-600 hover:underline">
+            Create an account
+          </Link>
+        </p>
       </div>
     </div>
   );

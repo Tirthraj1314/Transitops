@@ -30,13 +30,25 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function signup(payload) {
+    setLoading(true);
+    try {
+      const data = await authService.register(payload);
+      localStorage.setItem("transitops_token", data.token);
+      setUser(data.user);
+      return data.user;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function logout() {
     authService.logout();
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
