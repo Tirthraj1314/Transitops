@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { logAudit } = require('../utils/audit');
 
 const VALID_ROLES = ['Super Admin', 'Fleet Manager', 'Dispatcher', 'Safety Officer', 'Finance Manager', 'Driver'];
 
@@ -41,8 +42,10 @@ const updateUserRole = async (req, res) => {
       return res.status(400).json({ message: 'You cannot change your own role away from Super Admin' });
     }
 
+    const oldRole = user.role;
     user.role = role;
     await user.save();
+    logAudit(req, 'UPDATE_USER_ROLE', 'User', user._id, `${user.email}: ${oldRole} -> ${role}`);
     user.password = undefined;
     res.json(user);
   } catch (error) {
@@ -68,6 +71,7 @@ const updateUserStatus = async (req, res) => {
 
     user.isActive = isActive;
     await user.save();
+    logAudit(req, isActive ? 'ACTIVATE_USER' : 'DEACTIVATE_USER', 'User', user._id, user.email);
     user.password = undefined;
     res.json(user);
   } catch (error) {
@@ -87,6 +91,7 @@ const deleteUser = async (req, res) => {
     }
 
     await user.deleteOne();
+    logAudit(req, 'DELETE_USER', 'User', user._id, user.email);
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });

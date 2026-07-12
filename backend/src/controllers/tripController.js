@@ -3,6 +3,7 @@ const Vehicle = require('../models/Vehicle');
 const Driver = require('../models/Driver');
 const Invoice = require('../models/Invoice');
 const { notifyRole, notifyUser } = require('../utils/notify');
+const { logAudit } = require('../utils/audit');
 
 // @desc  Create a trip (Draft status) — does NOT lock vehicle/driver yet
 // @route POST /api/trips
@@ -136,6 +137,7 @@ const dispatchTrip = async (req, res) => {
     if (driverDoc.user) {
       notifyUser(driverDoc.user, 'Trip Started', `You've been dispatched: ${trip.source} → ${trip.destination}`);
     }
+    logAudit(req, 'DISPATCH_TRIP', 'Trip', trip._id, `${trip.source} -> ${trip.destination}`);
 
     res.json({ message: 'Trip dispatched successfully', trip });
   } catch (error) {
@@ -358,6 +360,7 @@ const cancelTrip = async (req, res) => {
       }
     }
 
+    logAudit(req, 'CANCEL_TRIP', 'Trip', trip._id, `${trip.source} -> ${trip.destination}`);
     res.json({ message: 'Trip cancelled successfully', trip });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -2,6 +2,7 @@ const Vehicle = require('../models/Vehicle');
 const FuelLog = require('../models/FuelLog');
 const Maintenance = require('../models/Maintenance');
 const Expense = require('../models/Expense');
+const { logAudit } = require('../utils/audit');
 
 // @desc  Create a new vehicle
 // @route POST /api/vehicles
@@ -28,6 +29,7 @@ const createVehicle = async (req, res) => {
       region,
     });
 
+    logAudit(req, 'CREATE_VEHICLE', 'Vehicle', vehicle._id, vehicle.registrationNumber);
     res.status(201).json(vehicle);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -94,6 +96,7 @@ const deleteVehicle = async (req, res) => {
     if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
 
     await vehicle.deleteOne();
+    logAudit(req, 'DELETE_VEHICLE', 'Vehicle', vehicle._id, vehicle.registrationNumber);
     res.json({ message: 'Vehicle deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });

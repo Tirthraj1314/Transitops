@@ -17,6 +17,7 @@ import FuelLogs from "./pages/FuelLogs";
 import Revenue from "./pages/Revenue";
 import Invoices from "./pages/Invoices";
 import Notifications from "./pages/Notifications";
+import AuditLogs from "./pages/AuditLogs";
 import ComingSoon from "./pages/ComingSoon";
 import RequireRole from "./components/RequireRole";
 
@@ -62,7 +63,14 @@ export default function App() {
           <Route path="/roles" element={<ComingSoon title="Roles & Permissions" />} />
           <Route path="/fuel-logs" element={<FuelLogs />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/audit-logs" element={<ComingSoon title="Audit Logs" />} />
+          <Route
+            path="/audit-logs"
+            element={
+              <RequireRole roles={["Super Admin"]}>
+                <AuditLogs />
+              </RequireRole>
+            }
+          />
           <Route path="/settings" element={<ComingSoon title="Settings" />} />
           <Route path="/vehicle-documents" element={<ComingSoon title="Vehicle Documents" />} />
           <Route path="/live-tracking" element={<ComingSoon title="Live Tracking" />} />

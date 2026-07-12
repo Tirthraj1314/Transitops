@@ -1,5 +1,6 @@
 const Driver = require('../models/Driver');
 const User = require('../models/User');
+const { logAudit } = require('../utils/audit');
 
 // @desc  Create a new driver
 // @route POST /api/drivers
@@ -24,6 +25,7 @@ const createDriver = async (req, res) => {
       contactNumber,
     });
 
+    logAudit(req, 'CREATE_DRIVER', 'Driver', driver._id, driver.name);
     res.status(201).json(driver);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -97,6 +99,9 @@ const updateDriverSafety = async (req, res) => {
     }
 
     await driver.save();
+    if (status === 'Suspended') {
+      logAudit(req, 'SUSPEND_DRIVER', 'Driver', driver._id, driver.name);
+    }
     res.json(driver);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -147,6 +152,7 @@ const deleteDriver = async (req, res) => {
     if (!driver) return res.status(404).json({ message: 'Driver not found' });
 
     await driver.deleteOne();
+    logAudit(req, 'DELETE_DRIVER', 'Driver', driver._id, driver.name);
     res.json({ message: 'Driver deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
