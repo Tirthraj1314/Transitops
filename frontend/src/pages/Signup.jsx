@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
+import { USE_MOCK_AUTH } from "../utils/authMode";
 
 export default function Signup() {
   const { signup, loading } = useAuth();
@@ -31,6 +32,13 @@ export default function Signup() {
       <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-sm">
         <h1 className="mb-1 text-xl font-bold text-blue-600">TransitOps</h1>
         <p className="mb-6 text-sm text-gray-500">Create an account to manage your fleet</p>
+
+        {USE_MOCK_AUTH && (
+          <div className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
+            Demo mode — the backend isn't connected yet, so this account is stored in this browser
+            only and won't carry over once the real backend is wired up.
+          </div>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
