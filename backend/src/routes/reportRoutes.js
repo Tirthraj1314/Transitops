@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getReport, exportReportCSV } = require('../controllers/reportController');
+const { getReport, exportReportCSV, exportReportPDF } = require('../controllers/reportController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.use(protect);
@@ -10,5 +10,6 @@ router.use(protect);
 // report type implemented so far, so it's open to any authenticated user.
 router.get('/', getReport);
 router.get('/export/csv', exportReportCSV);
+router.get('/export/pdf', exportReportPDF);
 
 module.exports = router;
