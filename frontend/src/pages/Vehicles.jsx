@@ -37,7 +37,7 @@ export default function Vehicles() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-gray-800">Vehicles</h1>
+        <h1 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Vehicles</h1>
         <button
           onClick={() => setModalOpen(true)}
           className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -53,18 +53,18 @@ export default function Vehicles() {
         <form onSubmit={handleSubmit(onAddVehicle)} className="space-y-3">
           <input
             placeholder="Vehicle number"
-            className="w-full rounded-lg border px-3 py-2 text-sm"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             {...register("number", { required: true })}
           />
           <input
             placeholder="Type (Truck, Van, ...)"
-            className="w-full rounded-lg border px-3 py-2 text-sm"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             {...register("type", { required: true })}
           />
           <input
             placeholder="Odometer (km)"
             type="number"
-            className="w-full rounded-lg border px-3 py-2 text-sm"
+            className="w-full rounded-lg border px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             {...register("odometer")}
           />
           <button

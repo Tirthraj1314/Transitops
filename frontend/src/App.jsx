@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { useTheme } from "./context/ThemeContext";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -13,9 +14,19 @@ import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 
 export default function App() {
+  const { theme } = useTheme();
+
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style:
+            theme === "dark"
+              ? { background: "#1e293b", color: "#e2e8f0", border: "1px solid #334155" }
+              : undefined,
+        }}
+      />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

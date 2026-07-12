@@ -16,11 +16,11 @@ export default function Trips() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-lg font-semibold text-gray-800">Trips</h1>
+      <h1 className="text-lg font-semibold text-gray-800 dark:text-slate-100">Trips</h1>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-xl bg-white shadow-sm dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b bg-gray-50 text-gray-500">
+          <thead className="border-b bg-gray-50 text-gray-500 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">Route</th>
               <th className="px-4 py-3">Vehicle</th>
@@ -32,17 +32,17 @@ export default function Trips() {
           <tbody>
             {trips.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={5} className="px-4 py-6 text-center text-gray-500 dark:text-slate-400">
                   No trips found.
                 </td>
               </tr>
             ) : (
               trips.map((trip) => (
-                <tr key={trip.id} className="border-b last:border-0 hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-800">{trip.route}</td>
-                  <td className="px-4 py-3 text-gray-600">{trip.vehicle}</td>
-                  <td className="px-4 py-3 text-gray-600">{trip.driver}</td>
-                  <td className="px-4 py-3 text-gray-600">{trip.departureTime}</td>
+                <tr key={trip.id} className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
+                  <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">{trip.route}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.vehicle}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.driver}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{trip.departureTime}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={trip.status} />
                   </td>

@@ -36,19 +36,20 @@ export default function Dashboard() {
         <DashboardCard title="Active Trips" value={summary.activeTrips} icon={FiMap} accent="amber" />
         <DashboardCard
           title="Monthly Expense"
-          value={`₹${summary.monthlyExpense.toLocaleString()}`}
+          value={summary.monthlyExpense}
+          prefix="₹"
           icon={FiDollarSign}
           accent="red"
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-gray-700">Trips per week</h2>
+        <div className="rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+          <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-slate-300">Trips per week</h2>
           <TrendChart data={tripTrend} dataKey="trips" xKey="week" />
         </div>
-        <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-gray-700">Expenses by category</h2>
+        <div className="rounded-xl bg-white p-5 shadow-sm dark:bg-slate-900">
+          <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-slate-300">Expenses by category</h2>
           <ComparisonChart data={expenseByCategory} dataKey="amount" xKey="category" />
         </div>
       </div>
