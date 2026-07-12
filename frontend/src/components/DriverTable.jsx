@@ -1,6 +1,6 @@
 import StatusBadge from "./StatusBadge";
 
-export default function DriverTable({ drivers = [], onSelect }) {
+export default function DriverTable({ drivers = [], onSelect, onLink, canLink = false }) {
   if (drivers.length === 0) {
     return (
       <p className="p-6 text-center text-sm text-gray-500 dark:text-slate-400">No drivers found.</p>
@@ -17,22 +17,37 @@ export default function DriverTable({ drivers = [], onSelect }) {
             <th className="px-4 py-3">Contact</th>
             <th className="px-4 py-3">Safety Score</th>
             <th className="px-4 py-3">Status</th>
+            {canLink && <th className="px-4 py-3">Login Account</th>}
           </tr>
         </thead>
         <tbody>
           {drivers.map((driver) => (
             <tr
               key={driver._id}
-              onClick={() => onSelect?.(driver)}
-              className="cursor-pointer border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
+              className="border-b last:border-0 hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
             >
-              <td className="px-4 py-3 font-medium text-gray-800 dark:text-slate-100">{driver.name}</td>
+              <td
+                onClick={() => onSelect?.(driver)}
+                className="cursor-pointer px-4 py-3 font-medium text-gray-800 dark:text-slate-100"
+              >
+                {driver.name}
+              </td>
               <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.licenseNumber}</td>
               <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.contactNumber}</td>
               <td className="px-4 py-3 text-gray-600 dark:text-slate-300">{driver.safetyScore}</td>
               <td className="px-4 py-3">
                 <StatusBadge status={driver.status} />
               </td>
+              {canLink && (
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => onLink?.(driver)}
+                    className="rounded-lg border px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  >
+                    {driver.user ? "Linked" : "Link account"}
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

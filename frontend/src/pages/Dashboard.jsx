@@ -47,6 +47,8 @@ export default function Dashboard() {
   const [maintenance, setMaintenance] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [fuelLogs, setFuelLogs] = useState([]);
+  const [myTrips, setMyTrips] = useState([]);
+  const [noDriverProfile, setNoDriverProfile] = useState(false);
 
   useEffect(() => {
     api
@@ -67,6 +69,14 @@ export default function Dashboard() {
     if (needsMoney) {
       api.get("/expenses").then(({ data }) => setExpenses(data || [])).catch(() => {});
       api.get("/fuel").then(({ data }) => setFuelLogs(data || [])).catch(() => {});
+    }
+    if (role === "Driver") {
+      api
+        .get("/trips/my")
+        .then(({ data }) => setMyTrips(data || []))
+        .catch((err) => {
+          if (err.response?.status === 404) setNoDriverProfile(true);
+        });
     }
   }, [role]);
 
@@ -196,12 +206,38 @@ export default function Dashboard() {
       dataKey: "amount",
     };
   } else if (role === "Driver") {
+    const activeMyTrip = myTrips.find((t) => ["Dispatched", "In Progress"].includes(t.status));
     cards = [
-      { title: "Assigned Trips", value: NA, icon: FiMap, accent: "blue" },
-      { title: "Completed Trips", value: NA, icon: FiMap, accent: "green" },
-      { title: "Upcoming Trips", value: NA, icon: FiMap, accent: "amber" },
-      { title: "Assigned Vehicle", value: NA, icon: FiTruck, accent: "blue" },
-      { title: "Safety Score", value: NA, icon: FiActivity, accent: "green" },
+      {
+        title: "Assigned Trips",
+        value: myTrips.filter((t) => ["Dispatched", "In Progress"].includes(t.status)).length,
+        icon: FiMap,
+        accent: "blue",
+      },
+      {
+        title: "Completed Trips",
+        value: myTrips.filter((t) => t.status === "Completed").length,
+        icon: FiMap,
+        accent: "green",
+      },
+      {
+        title: "Upcoming Trips",
+        value: myTrips.filter((t) => t.status === "Dispatched").length,
+        icon: FiMap,
+        accent: "amber",
+      },
+      {
+        title: "Assigned Vehicle",
+        value: activeMyTrip?.vehicle?.registrationNumber || NA,
+        icon: FiTruck,
+        accent: "blue",
+      },
+      {
+        title: "Safety Score",
+        value: activeMyTrip?.driver?.safetyScore ?? myTrips[0]?.driver?.safetyScore ?? NA,
+        icon: FiActivity,
+        accent: "green",
+      },
     ];
   }
 
@@ -213,10 +249,10 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {role === "Driver" && (
+      {role === "Driver" && noDriverProfile && (
         <div className="rounded-xl bg-white p-5 text-sm text-gray-500 shadow-sm dark:bg-slate-900 dark:text-slate-400">
-          Driver accounts aren't linked to a driver record yet, so trip/vehicle assignment data
-          isn't available here. This needs a User ↔ Driver link on the backend.
+          No driver record is linked to this account yet. A Safety Officer needs to link it from
+          the Drivers page before trip/vehicle assignment data shows up here.
         </div>
       )}
 

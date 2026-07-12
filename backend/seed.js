@@ -81,6 +81,16 @@ const seed = async () => {
         status: 'Retired',
         region: 'Ahmedabad',
       },
+      {
+        registrationNumber: 'GJ01IJ7890',
+        name: 'Van-11',
+        type: 'Van',
+        maxLoadCapacity: 500,
+        odometer: 5000,
+        acquisitionCost: 780000,
+        status: 'Available',
+        region: 'Ahmedabad',
+      },
     ]);
     console.log(`Created ${vehicles.length} vehicles.`);
 
@@ -131,6 +141,10 @@ const seed = async () => {
     ]);
     console.log(`Created ${drivers.length} drivers.`);
 
+    console.log('Linking driver@transitops.com to Alex Fernandes...');
+    drivers[0].user = users[5]._id;
+    await drivers[0].save();
+
     console.log('Creating a completed trip (with revenue/fuel for ROI testing)...');
     const completedTrip = await Trip.create({
       source: 'Ahmedabad',
@@ -155,6 +169,21 @@ const seed = async () => {
       plannedDistance: 220,
       status: 'Draft',
     });
+
+    console.log('Creating a dispatched trip for the driver portal demo (Alex Fernandes / Van-11)...');
+    await Trip.create({
+      source: 'Ahmedabad',
+      destination: 'Gandhinagar',
+      vehicle: vehicles[4]._id,
+      driver: drivers[0]._id,
+      cargoWeight: 300,
+      plannedDistance: 30,
+      status: 'Dispatched',
+    });
+    vehicles[4].status = 'On Trip';
+    await vehicles[4].save();
+    drivers[0].status = 'On Trip';
+    await drivers[0].save();
 
     console.log('Creating fuel logs and expenses for the completed trip vehicle...');
     await FuelLog.create([
@@ -193,6 +222,7 @@ const seed = async () => {
     console.log('- Truck-03: Retired — try dispatching it, should be rejected');
     console.log('- Sanjay Mehta: expired license — try dispatching his trip, should be rejected');
     console.log('- Vikram Singh: Suspended — try dispatching his trip, should be rejected');
+    console.log('- Van-11: On Trip, dispatched to Alex Fernandes (log in as driver@transitops.com to Start/Report Issue/Complete it)');
 
     process.exit(0);
   } catch (error) {

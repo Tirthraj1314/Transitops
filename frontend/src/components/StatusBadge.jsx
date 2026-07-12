@@ -4,6 +4,7 @@ const STATUS_STYLES = {
   completed: "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400",
   "on trip": "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
   dispatched: "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+  "in progress": "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
   "in shop": "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
   maintenance: "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
   draft: "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",

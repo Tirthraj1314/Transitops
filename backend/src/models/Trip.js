@@ -12,10 +12,16 @@ const tripSchema = new mongoose.Schema(
     fuelConsumed: { type: Number }, // liters, filled on completion
     status: {
       type: String,
-      enum: ['Draft', 'Dispatched', 'Completed', 'Cancelled'],
+      enum: ['Draft', 'Dispatched', 'In Progress', 'Completed', 'Cancelled'],
       default: 'Draft',
     },
     revenue: { type: Number, default: 0 }, // used later for ROI calc in reports
+    proofNotes: { type: String }, // driver-entered delivery proof / customer signature note
+    issueReport: {
+      type: { type: String, enum: ['Breakdown', 'Accident'] },
+      description: String,
+      reportedAt: Date,
+    },
   },
   { timestamps: true }
 );

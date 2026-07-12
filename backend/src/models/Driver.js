@@ -13,6 +13,8 @@ const driverSchema = new mongoose.Schema(
       enum: ['Available', 'On Trip', 'Off Duty', 'Suspended'],
       default: 'Available',
     },
+    // Links this driver record to a Driver-role login account, if one exists.
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true, sparse: true },
   },
   { timestamps: true }
 );

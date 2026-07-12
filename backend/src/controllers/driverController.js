@@ -1,4 +1,5 @@
 const Driver = require('../models/Driver');
+const User = require('../models/User');
 
 // @desc  Create a new driver
 // @route POST /api/drivers
@@ -102,6 +103,42 @@ const updateDriverSafety = async (req, res) => {
   }
 };
 
+// @desc  Link this driver record to a Driver-role login account
+// @route PATCH /api/drivers/:id/link-user
+const linkDriverUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const driver = await Driver.findById(req.params.id);
+    if (!driver) return res.status(404).json({ message: 'Driver not found' });
+
+    if (!email) {
+      driver.user = undefined;
+      await driver.save();
+      return res.json(driver);
+    }
+
+    // Safety Officer can't browse /api/users (Super Admin only), so this
+    // takes an email rather than a user ID - they'd know the driver's
+    // registered email from onboarding.
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ message: 'No user found with that email' });
+    if (user.role !== 'Driver') {
+      return res.status(400).json({ message: 'That user does not have the Driver role' });
+    }
+
+    const alreadyLinked = await Driver.findOne({ user: user._id, _id: { $ne: driver._id } });
+    if (alreadyLinked) {
+      return res.status(400).json({ message: 'That user is already linked to another driver record' });
+    }
+
+    driver.user = user._id;
+    await driver.save();
+    res.json(driver);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc  Delete driver
 // @route DELETE /api/drivers/:id
 const deleteDriver = async (req, res) => {
@@ -122,5 +159,6 @@ module.exports = {
   getDriverById,
   updateDriver,
   updateDriverSafety,
+  linkDriverUser,
   deleteDriver,
 };

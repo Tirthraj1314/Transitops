@@ -6,6 +6,7 @@ const {
   getDriverById,
   updateDriver,
   updateDriverSafety,
+  linkDriverUser,
   deleteDriver,
 } = require('../controllers/driverController');
 const { protect } = require('../middleware/authMiddleware');
@@ -23,5 +24,6 @@ router.route('/:id')
   .delete(authorizeRoles('Safety Officer'), deleteDriver);
 
 router.patch('/:id/safety', authorizeRoles('Safety Officer'), updateDriverSafety);
+router.patch('/:id/link-user', authorizeRoles('Safety Officer'), linkDriverUser);
 
 module.exports = router;

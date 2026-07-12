@@ -67,7 +67,7 @@ export default function App() {
           <Route path="/safety-reports" element={<ComingSoon title="Safety Reports" />} />
           <Route path="/revenue" element={<ComingSoon title="Revenue" />} />
           <Route path="/invoices" element={<ComingSoon title="Invoices" />} />
-          <Route path="/my-trips" element={<ComingSoon title="My Trips" />} />
+          <Route path="/my-trips" element={<Trips />} />
           <Route path="/documents" element={<ComingSoon title="Documents" />} />
         </Route>
 

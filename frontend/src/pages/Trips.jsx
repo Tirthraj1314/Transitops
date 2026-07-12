@@ -4,8 +4,14 @@ import StatusBadge from "../components/StatusBadge";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { can } from "../utils/permissions";
+import DriverTrips from "./DriverTrips";
 
 export default function Trips() {
+  const { user } = useAuth();
+  return user?.role === "Driver" ? <DriverTrips /> : <TripsManager />;
+}
+
+function TripsManager() {
   const { user } = useAuth();
   const canManage = can(user?.role, "trips", "CRUD");
   const [trips, setTrips] = useState([]);
@@ -79,7 +85,7 @@ export default function Trips() {
                           Dispatch
                         </button>
                       )}
-                      {trip.status === "Dispatched" && (
+                      {(trip.status === "Dispatched" || trip.status === "In Progress") && (
                         <div className="flex gap-2">
                           <button
                             onClick={() => runAction(trip._id, "complete")}
